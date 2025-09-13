@@ -1,4 +1,4 @@
-# adkhar_application
+# adkhar_project
 
 A new Flutter project.
 

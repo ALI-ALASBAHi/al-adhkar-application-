@@ -1,6 +1,6 @@
 {
-    "name": "adkhar_application",
-    "short_name": "adkhar_application",
+    "name": "adkhar_project",
+    "short_name": "adkhar_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
