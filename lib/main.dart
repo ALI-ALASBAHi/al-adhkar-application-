@@ -9,6 +9,7 @@ import 'screens/dhikr_screen.dart';
 import 'screens/placeholders.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/navigation_view_model.dart';
+import 'services/language_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,15 +22,30 @@ class AdhkarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => NavigationViewModel(),
-      child: MaterialApp(
-        title: 'Adhkar - Islamic Remembrance',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        home: const MainScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NavigationViewModel()),
+        ChangeNotifierProvider(create: (_) => LanguageService()),
+      ],
+      child: Consumer<LanguageService>(
+        builder: (context, languageService, child) {
+          return MaterialApp(
+            title: 'Adhkar - Islamic Remembrance',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: ThemeMode.system,
+            debugShowCheckedModeBanner: false,
+            // RTL Support
+            locale: languageService.isArabic ? const Locale('ar') : const Locale('en'),
+            builder: (context, child) {
+              return Directionality(
+                textDirection: languageService.isRTL ? TextDirection.rtl : TextDirection.ltr,
+                child: child!,
+              );
+            },
+            home: const MainScreen(),
+          );
+        },
       ),
     );
   }
@@ -108,24 +124,24 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     }
   }
 
-  String? _getHeaderTitle() {
+  String? _getHeaderTitle(LanguageService languageService) {
     switch (_activeTab) {
       case 'dhikr':
-        return 'Dhikr';
+        return languageService.t('dhikr');
       case 'favorites':
-        return 'Favorites';
+        return languageService.t('favorites');
       case 'settings':
-        return 'Settings';
+        return languageService.t('settings');
       case 'prayer-times':
-        return 'Prayer Times';
+        return languageService.t('prayer_times_title');
       case 'qibla':
-        return 'Qibla Direction';
+        return languageService.t('qibla_title');
       case 'statistics':
-        return 'Statistics';
+        return languageService.t('statistics_title');
       case 'calendar':
-        return 'Islamic Calendar';
+        return languageService.t('calendar_title');
       case 'backup':
-        return 'Backup & Sync';
+        return languageService.t('backup_title');
       default:
         return null;
     }
@@ -133,57 +149,61 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: const Color(0xFFF9FAFB),
-      drawer: Sidebar(
-        onClose: () => Navigator.of(context).pop(),
-        onNavigate: (tab) {
-          Navigator.of(context).pop();
-          _handleSidebarNavigate(tab);
-        },
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              color: const Color(0xFF111827),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('9:41', style: TextStyle(color: Colors.white, fontSize: 12)),
-                ],
-              ),
-            ),
-            AppHeader(
-              title: _getHeaderTitle(),
-              onMenuClick: () => _scaffoldKey.currentState?.openDrawer(),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 448),
-                  child: AnimatedBuilder(
-                    animation: _transitionController,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _scaleAnimation.value,
-                        child: Opacity(opacity: _fadeAnimation.value, child: _renderScreen()),
-                      );
-                    },
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: const Color(0xFFF9FAFB),
+          drawer: Sidebar(
+            onClose: () => Navigator.of(context).pop(),
+            onNavigate: (tab) {
+              Navigator.of(context).pop();
+              _handleSidebarNavigate(tab);
+            },
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Container(
+                  color: const Color(0xFF111827),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('9:41', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    ],
                   ),
                 ),
-              ),
+                AppHeader(
+                  title: _getHeaderTitle(languageService),
+                  onMenuClick: () => _scaffoldKey.currentState?.openDrawer(),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 448),
+                      child: AnimatedBuilder(
+                        animation: _transitionController,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _scaleAnimation.value,
+                            child: Opacity(opacity: _fadeAnimation.value, child: _renderScreen()),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomBottomNavigation(
-        activeTab: _activeTab,
-        onTabChange: _handleTabChange,
-      ),
+          ),
+          bottomNavigationBar: CustomBottomNavigation(
+            activeTab: _activeTab,
+            onTabChange: _handleTabChange,
+          ),
+        );
+      },
     );
   }
 }

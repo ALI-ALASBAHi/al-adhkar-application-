@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/language_service.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   final String activeTab;
@@ -38,15 +40,19 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: _indexFromTab(activeTab),
-      onTap: (i) => onTabChange(_tabFromIndex(i)),
-      items:  [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.dark_mode_outlined), label: 'Dhikr'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favorites'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
-      ],
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return BottomNavigationBar(
+          currentIndex: _indexFromTab(activeTab),
+          onTap: (i) => onTabChange(_tabFromIndex(i)),
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: languageService.t('home')),
+            BottomNavigationBarItem(icon: Icon(Icons.dark_mode_outlined), label: languageService.t('dhikr')),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: languageService.t('favorites')),
+            BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: languageService.t('settings')),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/language_service.dart';
 
 class AppHeader extends StatelessWidget {
   final String? title;
@@ -18,26 +20,30 @@ class AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      child: Row(
-        children: [
-          if (showBackButton)
-            IconButton(icon: const Icon(Icons.arrow_back), onPressed: onBack)
-          else
-            IconButton(icon: const Icon(Icons.menu), onPressed: onMenuClick),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Consumer<LanguageService>(
+      builder: (context, languageService, child) {
+        return Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
             children: [
-              Text(title ?? 'Adhkar', style: Theme.of(context).textTheme.titleLarge),
-              Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
+              if (showBackButton)
+                IconButton(icon: const Icon(Icons.arrow_back), onPressed: onBack)
+              else
+                IconButton(icon: const Icon(Icons.menu), onPressed: onMenuClick),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: languageService.isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  Text(title ?? languageService.t('app_title'), style: Theme.of(context).textTheme.titleLarge),
+                  Text(languageService.t('app_subtitle'), style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+              const Spacer(),
             ],
           ),
-          const Spacer(),
-        ],
-      ),
+        );
+      },
     );
   }
 }
