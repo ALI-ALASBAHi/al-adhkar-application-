@@ -1,7 +1,12 @@
+import 'adhkar_categories/morning.dart' as morning_data;
+import 'adhkar_categories/evening.dart' as evening_data;
+import 'adhkar_categories/after_prayer.dart' as after_prayer_data;
+
 class AdhkarCategory {
   final String id;
   final String title;
   final String arabicTitle;
+  final String arabicDescription;
   final String description;
   final int count;
 
@@ -9,6 +14,7 @@ class AdhkarCategory {
     required this.id,
     required this.title,
     required this.arabicTitle,
+    required this.arabicDescription,
     required this.description,
     required this.count,
   });
@@ -34,36 +40,22 @@ class Dhikr {
 
 class AdhkarData {
   static const List<AdhkarCategory> categories = [
-    AdhkarCategory(id: 'morning', title: 'Morning Adhkar', arabicTitle: 'أذكار الصباح', description: 'Remembrances to be recited in the morning', count: 12),
-    AdhkarCategory(id: 'evening', title: 'Evening Adhkar', arabicTitle: 'أذكار المساء', description: 'Remembrances to be recited in the evening', count: 11),
-    AdhkarCategory(id: 'after-prayer', title: 'After Prayer', arabicTitle: 'أذكار بعد الصلاة', description: 'Dhikr to recite after the five daily prayers', count: 8),
+    AdhkarCategory(id: 'morning', title: 'Morning Adhkar', arabicTitle: 'أذكار الصباح', arabicDescription: 'أذكار تُقال في الصباح', description: 'Remembrances to be recited in the morning', count: 12),
+    AdhkarCategory(id: 'evening', title: 'Evening Adhkar', arabicTitle: 'أذكار المساء', arabicDescription: 'أذكار تُقال في المساء', description: 'Remembrances to be recited in the evening', count: 11),
+    AdhkarCategory(id: 'after-prayer', title: 'After Prayer', arabicTitle: 'أذكار بعد الصلاة', arabicDescription: 'أذكار تُقال بعد الصلوات الخمس', description: 'Dhikr to recite after the five daily prayers', count: 8),
   ];
 
-  static final Map<String, List<Dhikr>> _adhkarData = {
-    'morning': [
-      Dhikr(
-        id: 1,
-        arabic: 'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ...',
-        transliteration: "Aṣbaḥnā wa aṣbaḥa'l-mulku lillāh...",
-        translation: 'We have reached the morning...',
-        count: 3,
-        source: 'Muslim 2723',
-      ),
-    ],
-    'evening': [
-      Dhikr(
-        id: 1,
-        arabic: 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ...',
-        transliteration: "Amsaynā wa amsa'l-mulku lillāh...",
-        translation: 'We have reached the evening...',
-        count: 3,
-        source: 'Muslim 2723',
-      ),
-    ],
-  };
-
   static List<Dhikr> getAdhkarList(String categoryId) {
-    return _adhkarData[categoryId] ?? [];
+    switch (categoryId) {
+      case 'morning':
+        return morning_data.items;
+      case 'evening':
+        return evening_data.items;
+      case 'after-prayer':
+        return after_prayer_data.items;
+      default:
+        return const [];
+    }
   }
 }
 

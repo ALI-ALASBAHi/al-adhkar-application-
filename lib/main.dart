@@ -10,6 +10,7 @@ import 'screens/placeholders.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/navigation_view_model.dart';
 import 'services/language_service.dart';
+import 'services/recent_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ class AdhkarApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
         ChangeNotifierProvider(create: (_) => LanguageService()),
+        ChangeNotifierProvider(create: (_) => RecentService()),
       ],
       child: Consumer<LanguageService>(
         builder: (context, languageService, child) {
@@ -162,18 +164,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             },
           ),
           body: SafeArea(
+            top: false,
             child: Column(
               children: [
-                Container(
-                  color: const Color(0xFF111827),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('9:41', style: TextStyle(color: Colors.white, fontSize: 12)),
-                    ],
-                  ),
-                ),
+                // Removed mock status bar
                 AppHeader(
                   title: _getHeaderTitle(languageService),
                   onMenuClick: () => _scaffoldKey.currentState?.openDrawer(),

@@ -46,11 +46,16 @@ class CustomBottomNavigation extends StatelessWidget {
           currentIndex: _indexFromTab(activeTab),
           onTap: (i) => onTabChange(_tabFromIndex(i)),
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: languageService.t('home')),
-            BottomNavigationBarItem(icon: Icon(Icons.dark_mode_outlined), label: languageService.t('dhikr')),
-            BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: languageService.t('favorites')),
-            BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: languageService.t('settings')),
+            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: languageService.t('Home')),
+            BottomNavigationBarItem(icon: Icon(Icons.dark_mode_outlined), label: languageService.t('Dhikr')),
+            BottomNavigationBarItem(icon: Icon(Icons.mosque_outlined), label: languageService.t('Prayer')),
+            BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: languageService.t('Favorites')),
+            BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: languageService.t('Settings')),
           ],
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         );
       },
     );

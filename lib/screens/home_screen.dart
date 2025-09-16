@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:math';
 import 'package:provider/provider.dart';
 import '../services/language_service.dart';
+import '../models/adhkar_data.dart';
+import '../services/recent_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,19 +20,47 @@ class _HomeScreenState extends State<HomeScreen> {
   // Timer for updating time-based content
   Timer? _timeUpdateTimer;
   
-  // Static quotes database - can be moved to a separate file later
+  // Quranic verses database with Arabic and English translations
   final List<Map<String, String>> _quotes = [
     {
-      'text': '"Remember Allah often, so that you may be successful"',
+      'text_en': '"Remember Allah often, so that you may be successful"',
+      'text_ar': '"وَاذْكُرُوا اللَّهَ كَثِيرًا لَّعَلَّكُمْ تُفْلِحُونَ"',
       'reference': 'Quran 62:10',
     },
     {
-      'text': '"And whoever turns away from My remembrance - indeed, he will have a depressed life"',
+      'text_en': '"And whoever turns away from My remembrance - indeed, he will have a depressed life"',
+      'text_ar': '"وَمَنْ أَعْرَضَ عَن ذِكْرِي فَإِنَّ لَهُ مَعِيشَةً ضَنكًا"',
       'reference': 'Quran 20:124',
     },
     {
-      'text': '"So remember Me; I will remember you"',
+      'text_en': '"So remember Me; I will remember you"',
+      'text_ar': '"فَاذْكُرُونِي أَذْكُرْكُمْ"',
       'reference': 'Quran 2:152',
+    },
+    {
+      'text_en': '"And it is He who created the heavens and earth in truth. And the day He says, "Be," and it is, His word is the truth"',
+      'text_ar': '"وَهُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ بِالْحَقِّ ۖ وَيَوْمَ يَقُولُ كُن فَيَكُونُ ۚ قَوْلُهُ الْحَقُّ"',
+      'reference': 'Quran 6:73',
+    },
+    {
+      'text_en': '"And whoever relies upon Allah - then He is sufficient for him"',
+      'text_ar': '"وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ"',
+      'reference': 'Quran 65:3',
+    },
+    {
+      'text_en': '"And whoever does righteous deeds, whether male or female, while being a believer - those will enter Paradise"',
+      'text_ar': '"وَمَن يَعْمَلْ مِنَ الصَّالِحَاتِ مِن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَأُولَٰئِكَ يَدْخُلُونَ الْجَنَّةَ"',
+      'reference': 'Quran 4:124',
+    },
+    {
+      'text_en': '"And whoever fears Allah - He will make for him a way out"',
+      'text_ar': '"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا"',
+      'reference': 'Quran 65:2',
+    },
+    {
+      'text_en': '"And whoever fears Allah - He will make for him ease in his matter"',
+      'text_ar': '"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مِنْ أَمْرِهِ يُسْرًا"',
+      'reference': 'Quran 65:4',
     },
   ];
 
@@ -59,10 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  /// Rotates the quote to show a different one
+  /// Selects a random quote to show
   void _rotateQuote() {
     setState(() {
-      _currentQuoteIndex = (_currentQuoteIndex + 1) % _quotes.length;
+      final random = Random();
+      int newIndex;
+      do {
+        newIndex = random.nextInt(_quotes.length);
+      } while (newIndex == _currentQuoteIndex && _quotes.length > 1);
+      _currentQuoteIndex = newIndex;
     });
   }
 
@@ -160,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
           _buildRecentAdhkarSection(languageService),
           const SizedBox(height: 24),
-          _buildQuoteSection(),
+          _buildQuoteSection(languageService),
         ],
       ),
     );
@@ -312,6 +348,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Recent Adhkar quick access section with Arabic support
   Widget _buildRecentAdhkarSection(LanguageService languageService) {
+    final recents = context.watch<RecentService?>()?.recent ?? const <String>[];
+    final recentCategories = recents
+        .map((id) => AdhkarData.categories.firstWhere((c) => c.id == id, orElse: () => AdhkarData.categories.first))
+        .toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -324,27 +365,47 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        Row(
-          children: [
-            // Morning Dhikr button
-            Expanded(
-              child: _buildCircularButton(
-                icon: Icons.wb_sunny,
-                label: languageService.t('morning_adhkar'),
-                onTap: () => _navigateToAdhkar('morning'),
+        if (recentCategories.isEmpty)
+          Row(
+            children: [
+              Expanded(
+                child: _buildCircularButton(
+                  icon: Icons.wb_sunny,
+                  label: languageService.t('morning_adhkar'),
+                  onTap: () => _navigateToAdhkar('morning'),
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            // Evening Dhikr button
-            Expanded(
-              child: _buildCircularButton(
-                icon: Icons.nightlight_round,
-                label: languageService.t('evening_adhkar'),
-                onTap: () => _navigateToAdhkar('evening'),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildCircularButton(
+                  icon: Icons.nightlight_round,
+                  label: languageService.t('evening_adhkar'),
+                  onTap: () => _navigateToAdhkar('evening'),
+                ),
               ),
+            ],
+          )
+        else
+          SizedBox(
+            height: 92,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, i) {
+                final c = recentCategories[i];
+                final icon = c.id == 'morning' ? Icons.wb_sunny : c.id == 'evening' ? Icons.nightlight_round : Icons.star;
+                return SizedBox(
+                  width: 120,
+                  child: _buildCircularButton(
+                    icon: icon,
+                    label: languageService.isArabic ? c.arabicTitle : c.title,
+                    onTap: () => _navigateToAdhkar(c.id),
+                  ),
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              itemCount: recentCategories.length,
             ),
-          ],
-        ),
+          ),
       ],
     );
   }
@@ -388,8 +449,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Rotating quote section with Quran/Hadith references
-  Widget _buildQuoteSection() {
+  Widget _buildQuoteSection(LanguageService languageService) {
     final currentQuote = _quotes[_currentQuoteIndex];
+    final isArabic = languageService.isArabic;
+    final verseText = isArabic ? currentQuote['text_ar']! : currentQuote['text_en']!;
     
     return Container(
       width: double.infinity,
@@ -408,15 +471,17 @@ class _HomeScreenState extends State<HomeScreen> {
             size: 24,
           ),
           const SizedBox(height: 16),
-          // Quote text
+          // Quote text with proper Arabic font support
           Text(
-            currentQuote['text']!,
-            style: const TextStyle(
-              color: Color(0xFF374151),
-              fontSize: 16,
+            verseText,
+            style: TextStyle(
+              color: const Color(0xFF374151),
+              fontSize: isArabic ? 18 : 16,
               height: 1.5,
+              fontFamily: isArabic ? 'Amiri' : null,
             ),
             textAlign: TextAlign.center,
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
           ),
           const SizedBox(height: 12),
           // Reference (tappable in future)

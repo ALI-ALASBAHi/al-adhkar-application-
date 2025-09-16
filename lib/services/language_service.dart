@@ -59,6 +59,7 @@ class LanguageService extends ChangeNotifier {
     'dhikr': 'Dhikr',
     'favorites': 'Favorites',
     'settings': 'Settings',
+    'Prayer': 'Prayer',
     
     // Sidebar
     'settings_section': 'SETTINGS',
@@ -84,6 +85,10 @@ class LanguageService extends ChangeNotifier {
     'statistics_title': 'Statistics',
     'calendar_title': 'Islamic Calendar',
     'backup_title': 'Backup & Sync',
+
+    // Dhikr Screen
+    'Adhkar Categories': 'Adhkar Categories',
+    'Choose a category': 'Choose a category',
   };
 
   // Arabic translations
@@ -116,11 +121,11 @@ class LanguageService extends ChangeNotifier {
     'night_time_remembrance': 'ذكر وقت الليل',
     
     // Navigation
-    'home': 'الرئيسية',
-    'dhikr': 'الأذكار',
-    'favorites': 'المفضلة',
-    'settings': 'الإعدادات',
-    
+    'Home': 'الرئيسية',
+    'Dhikr': 'الأذكار',
+    'Favorites': 'المفضلة',
+    'Settings': 'الإعدادات',
+    'Prayer': 'مواعيد الصلاه',
     // Sidebar
     'settings_section': 'الإعدادات',
     'dark_mode': 'الوضع المظلم',
@@ -145,5 +150,9 @@ class LanguageService extends ChangeNotifier {
     'statistics_title': 'الإحصائيات',
     'calendar_title': 'التقويم الهجري',
     'backup_title': 'النسخ الاحتياطي والمزامنة',
+
+    // Dhikr Screen
+    'Adhkar Categories': 'تصنيفات الأذكار',
+    'Choose a category': 'اختر تصنيفًا',
   };
 }
