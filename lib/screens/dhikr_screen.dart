@@ -103,7 +103,7 @@ class _CategoryCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          border: Border.all(color: const Color.fromRGBO(229, 231, 235, 1)),
         ),
         constraints: const BoxConstraints(minHeight: 88),
         padding: const EdgeInsets.all(25),

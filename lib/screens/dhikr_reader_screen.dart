@@ -1,8 +1,10 @@
+import 'package:adkhar_project/services/favorite_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/adhkar_data.dart';
 import '../services/recent_service.dart';
 import '../services/language_service.dart';
+import '../services/theme_service.dart';
 
 class DhikrReaderScreen extends StatefulWidget {
   final String categoryId;
@@ -22,11 +24,13 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
   late List<Dhikr> _items;
   int _currentIndex = 0;
   int _currentCount = 0;
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _items = AdhkarData.getAdhkarList(widget.categoryId);
+    _pageController = PageController(initialPage: _currentIndex);
   }
 
   void _handleTapNext() {
@@ -37,7 +41,12 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
       if (_currentCount >= target) {
         _currentCount = 0;
         if (_currentIndex < _items.length - 1) {
-          _currentIndex += 1;
+          // Animate to next page; onPageChanged will update _currentIndex
+          _pageController.animateToPage(
+            _currentIndex + 1,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         } else {
           // Completed
           context.read<RecentService?>()?.addRecent(widget.categoryId);
@@ -50,9 +59,14 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
   void _handleReset() {
     if (_items.isEmpty) return;
     setState(() {
-      _currentIndex = 0;
       _currentCount = 0;
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _showCompleted() {
@@ -126,48 +140,66 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
         media.textScaleFactor.clamp(0.9, 1.2).toDouble();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6), // خلفية فاتحة بدل الأسود
+      backgroundColor: const Color(0xFFF3F4F6), // white backgorund
       body: SafeArea(
         child: MediaQuery(
           data: media.copyWith(textScaleFactor: clampedTextScale),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 AppBar مخصص
+              // AppBar
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, size: 20),
-                      padding: EdgeInsets.zero,
-                      visualDensity: VisualDensity.compact,
+                    TextButton.icon(
                       onPressed: () => Navigator.of(context).pop(),
-                      color: const Color.fromARGB(255, 4, 5, 6),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${_items.isEmpty ? 0 : _currentIndex + 1} / ${_items.length}',
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 4, 4, 5),
-                        fontSize: 12,
-                        decoration: TextDecoration.none,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          widget.title,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: Color.fromARGB(255, 5, 6, 8),
-                            decoration: TextDecoration.none,
-                          ),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        size: 20,
+                        color: Color.fromARGB(255, 4, 5, 6),
+                      ),
+                      label: Text(
+                        language.isArabic ? 'العودة' : 'Back',
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 4, 4, 5),
+                          fontSize: 12,
+                          decoration: TextDecoration.none,
                         ),
                       ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        widget.title,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Color.fromARGB(255, 5, 6, 8),
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ),
+                    Consumer<ThemeService>(
+                      builder: (context, themeService, _) {
+                        final isDark = themeService.isDark;
+                        return Tooltip(
+                          message: isDark ? 'Light mode' : 'Dark mode',
+                          child: IconButton(
+                            icon: Icon(
+                              isDark ? Icons.light_mode : Icons.dark_mode,
+                            ),
+                            onPressed: themeService.toggleTheme,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -175,7 +207,7 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
 
               const SizedBox(height: 6),
 
-              // 🔹 Progress bar
+              // Progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: TweenAnimationBuilder<double>(
@@ -201,8 +233,31 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                   },
                 ),
               ),
+              Consumer<FavoriteService>(
+                builder: (context, favs, _) {
+                  if (_items.isEmpty) return const SizedBox.shrink();
+                  final dhikr = _items[_currentIndex];
+                  final isFav = favs.isFavorite(dhikr);
 
-              // 🔹 Main content
+                  return Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      icon: AnimatedScale(
+                        scale: isFav ? 1.3 : 1.0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        child: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color: isFav ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                      onPressed: () => favs.toggleFavorite(dhikr),
+                    ),
+                  );
+                },
+              ),
+
+              // Main content
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
@@ -222,146 +277,164 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                               : Column(
                                 children: [
                                   Expanded(
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) {
-                                        return SingleChildScrollView(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 12,
-                                          ),
-                                          child: ConstrainedBox(
-                                            constraints: BoxConstraints(
-                                              minHeight: constraints.maxHeight,
-                                            ),
-                                            child: Center(
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 16,
-                                                      vertical: 16,
-                                                    ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  border: Border.all(
-                                                    color: const Color(
-                                                      0xFFE5E7EB,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: DefaultTextStyle.merge(
-                                                  style: const TextStyle(
-                                                    decoration:
-                                                        TextDecoration.none,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .stretch,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              vertical: 80,
-                                                              horizontal: 12,
-                                                            ),
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFF9FAFB,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                10,
-                                                              ),
-                                                          border: Border.all(
-                                                            color: const Color(
-                                                              0xFFE5E7EB,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        child: Text(
-                                                          item!.arabic,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          textDirection:
-                                                              TextDirection.rtl,
-                                                          style: const TextStyle(
-                                                            fontSize: 18,
-                                                            height: 1.6,
-                                                            color: Color(
-                                                              0xFF111827,
-                                                            ),
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .none,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Text(
-                                                        item.transliteration,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          color: Color(
-                                                            0xFF2563EB,
-                                                          ),
-                                                          fontStyle:
-                                                              FontStyle.italic,
-                                                          fontSize: 13,
-                                                          height: 1.6,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .none,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Text(
-                                                        item.translation,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          fontSize: 13,
-                                                          color: Color(
-                                                            0xFF111827,
-                                                          ),
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .none,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Text(
-                                                        item.source,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          color: Color.fromARGB(
-                                                            255,
-                                                            9,
-                                                            9,
-                                                            11,
-                                                          ),
-                                                          fontSize: 11,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .none,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                    child: Column(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            '${_currentIndex + 1} / ${_items.length}',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                              color: Color.fromARGB(
+                                                255,
+                                                3,
+                                                3,
+                                                3,
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Expanded(
+                                          child: PageView.builder(
+                                            controller: _pageController,
+                                            itemCount: _items.length,
+                                            onPageChanged: (index) {
+                                              setState(() {
+                                                _currentIndex = index;
+                                                _currentCount = 0;
+                                              });
+                                            },
+                                            itemBuilder: (context, i) {
+                                              final item = _items[i];
+                                              return SingleChildScrollView(
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 12,
+                                                ),
+                                                child: Center(
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 16,
+                                                          vertical: 16,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      border: Border.all(
+                                                        color: const Color(
+                                                          0xFFE5E7EB,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .stretch,
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                vertical: 80,
+                                                                horizontal: 12,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color: const Color(
+                                                              0xFFF9FAFB,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                            border: Border.all(
+                                                              color:
+                                                                  const Color(
+                                                                    0xFFE5E7EB,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          child: Text(
+                                                            item.arabic,
+                                                            textAlign:
+                                                                TextAlign
+                                                                    .center,
+                                                            textDirection:
+                                                                TextDirection
+                                                                    .rtl,
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 18,
+                                                                  height: 1.6,
+                                                                  color: Color(
+                                                                    0xFF111827,
+                                                                  ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Text(
+                                                          item.transliteration,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              const TextStyle(
+                                                                color: Color(
+                                                                  0xFF2563EB,
+                                                                ),
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic,
+                                                                fontSize: 13,
+                                                                height: 1.6,
+                                                              ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Text(
+                                                          item.translation,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 13,
+                                                                color: Color(
+                                                                  0xFF111827,
+                                                                ),
+                                                              ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Text(
+                                                          item.source,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: const TextStyle(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                  255,
+                                                                  9,
+                                                                  9,
+                                                                  11,
+                                                                ),
+                                                            fontSize: 11,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Container(
@@ -376,25 +449,49 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                         246,
                                         247,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(999),
                                       border: Border.all(
                                         color: const Color(0xFFE5E7EB),
                                       ),
                                     ),
                                     child: Text(
-                                      '${_currentCount} / ${item!.count}',
+                                      // '${_currentCount} / ${item!.count}',
+                                      '${_currentCount}',
                                       style: const TextStyle(
                                         color: Color.fromARGB(255, 3, 46, 163),
                                         fontWeight: FontWeight.w600,
-                                        fontSize: 12,
+                                        fontSize: 20,
                                         decoration: TextDecoration.none,
                                       ),
                                     ),
                                   ),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      // Bottom-left: Times to read
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 12,
+                                        ),
+                                        // Times to read with translation
+                                        child: Text(
+                                          language.timesTranslation(
+                                            total.toString(),
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
                                     children: [
                                       const SizedBox(width: 6),
-                                      TextButton(
+                                      TextButton.icon(
                                         onPressed: _handleReset,
                                         style: TextButton.styleFrom(
                                           padding: const EdgeInsets.symmetric(
@@ -403,7 +500,12 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                           ),
                                           visualDensity: VisualDensity.compact,
                                         ),
-                                        child: Text(
+                                        icon: const Icon(
+                                          Icons.refresh_outlined,
+                                          color: Colors.black54,
+                                          size: 16,
+                                        ),
+                                        label: Text(
                                           language.isArabic ? 'إعادة' : 'Reset',
                                           style: const TextStyle(
                                             fontSize: 12,

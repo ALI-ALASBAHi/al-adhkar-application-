@@ -6,11 +6,14 @@ import 'widgets/bottom_navigation.dart';
 import 'widgets/sidebar.dart';
 import 'screens/home_screen.dart';
 import 'screens/dhikr_screen.dart';
-import 'screens/placeholders.dart';
+import 'screens/placeholders.dart' hide FavoritesScreen;
+import 'screens/favorites_screen.dart';
 import 'package:provider/provider.dart';
 import 'viewmodels/navigation_view_model.dart';
 import 'services/language_service.dart';
 import 'services/recent_service.dart';
+import 'services/theme_service.dart';
+import 'services/favorite_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,14 +31,17 @@ class AdhkarApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
         ChangeNotifierProvider(create: (_) => LanguageService()),
         ChangeNotifierProvider(create: (_) => RecentService()),
+        ChangeNotifierProvider(create: (_) => ThemeService()),
+        ChangeNotifierProvider(create: (_) => FavoriteService()),
       ],
       child: Consumer<LanguageService>(
         builder: (context, languageService, child) {
-          return MaterialApp(
+          return Consumer<ThemeService>(builder: (context, themeService, _) {
+            return MaterialApp(
             title: 'Adhkar - Islamic Remembrance',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.system,
+            themeMode: themeService.themeMode,
             debugShowCheckedModeBanner: false,
             // RTL Support
             locale: languageService.isArabic ? const Locale('ar') : const Locale('en'),
@@ -47,6 +53,7 @@ class AdhkarApp extends StatelessWidget {
             },
             home: const MainScreen(),
           );
+          });
         },
       ),
     );
@@ -108,7 +115,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       case 'dhikr':
         return const DhikrScreen();
       case 'favorites':
-        return const FavoritesScreen();
+        return FavoritesScreen();
       case 'settings':
         return const SettingsScreen();
       case 'prayer-times':
@@ -191,6 +198,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
               ],
             ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _handleTabChange('prayer-times'),
+            backgroundColor: Colors.blue,
+            child: const Icon(Icons.mosque_outlined, color: Colors.white),
           ),
           bottomNavigationBar: CustomBottomNavigation(
             activeTab: _activeTab,

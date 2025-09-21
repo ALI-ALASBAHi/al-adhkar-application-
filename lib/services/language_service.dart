@@ -20,9 +20,19 @@ class LanguageService extends ChangeNotifier {
     notifyListeners();
   }
 
+  String timesTranslation(String number) {
+    if (isArabic) {
+      return _arabicTranslations[number] ?? '$number مرات';
+    } else {
+      return _englishTranslations[number] ?? 'Times: $number';
+    }
+  }
+
   // Translation methods
   String t(String key) {
-    return _isArabic ? _arabicTranslations[key] ?? key : _englishTranslations[key] ?? key;
+    return _isArabic
+        ? _arabicTranslations[key] ?? key
+        : _englishTranslations[key] ?? key;
   }
 
   // English translations
@@ -30,37 +40,37 @@ class LanguageService extends ChangeNotifier {
     // App
     'app_title': 'Adhkar',
     'app_subtitle': 'أذكار',
-    
+
     // Greetings
     'good_morning': 'Good Morning',
     'good_afternoon': 'Good Afternoon',
     'good_evening': 'Good Evening',
     'good_night': 'Good Night',
-    
+
     // Home Screen
     'recommended_for_you': 'Recommended For You',
     'recent_adhkar': 'Recent Adhkar',
     'start': 'Start',
-    
+
     // Adhkar Categories
-    'morning_adhkar': 'Morning Adhkar',
-    'evening_adhkar': 'Evening Adhkar',
-    'after_prayer': 'After Prayer',
-    'before_sleep': 'Before Sleep',
-    
+    'morning': 'Morning Adhkar',
+    'evening': 'Evening Adhkar',
+    'after-prayer': 'After Prayer Adhkar',
+    'before-sleep': 'Before Sleep Adhkar',
+
     // Subtitles
     'start_day_remembrance': 'Start your day with remembrance',
     'end_day_dhikr': 'End your day with dhikr',
     'post_prayer_remembrance': 'Post-prayer remembrance',
     'night_time_remembrance': 'Night time remembrance',
-    
+
     // Navigation
     'home': 'Home',
     'dhikr': 'Dhikr',
     'favorites': 'Favorites',
     'settings': 'Settings',
-    'Prayer': 'Prayer',
-    
+    'prayer_Times': 'Prayer Times',
+
     // Sidebar
     'settings_section': 'SETTINGS',
     'dark_mode': 'Dark Mode',
@@ -78,7 +88,7 @@ class LanguageService extends ChangeNotifier {
     'about': 'About',
     'support_faq': 'Support & FAQ',
     'app_version': 'Adhkar App v1.2.0',
-    
+
     // Headers
     'prayer_times_title': 'Prayer Times',
     'qibla_title': 'Qibla Direction',
@@ -89,6 +99,35 @@ class LanguageService extends ChangeNotifier {
     // Dhikr Screen
     'Adhkar Categories': 'Adhkar Categories',
     'Choose a category': 'Choose a category',
+
+    // Times to read
+    '1': 'One Time',
+    '2': 'Two Times',
+    '3': 'Three Times',
+    '4': 'Four Times',
+    '5': 'Five Times',
+    '6': 'Six Times',
+    '7': 'Seven Times',
+    '8': 'Eight Times',
+    '9': 'Nine Times',
+    '10': 'Ten Times',
+
+    //Time to read translation
+    'One Time': 'One Time',
+    'Two Times': 'Two Times',
+    'Three Times': 'Three Times',
+    'Four Times': 'Four Times',
+    'Five Times': 'Five Times',
+    'Six Times': 'Six Times',
+    'Seven Times': 'Seven Times',
+    'Eight Times': 'Eight Times',
+    'Nine Times': 'Nine Times',
+    'Ten Times': 'Ten Times',
+
+    // Favorites Screen
+    'Your Favorite Adhkar': 'Your Favorite Adhkar',
+    'share': 'Share',
+    'read_full': 'Read Full',
   };
 
   // Arabic translations
@@ -96,36 +135,36 @@ class LanguageService extends ChangeNotifier {
     // App
     'app_title': 'أذكار',
     'app_subtitle': 'Adhkar',
-    
+
     // Greetings
     'good_morning': 'صباح الخير',
     'good_afternoon': 'مساء الخير',
     'good_evening': 'مساء الخير',
     'good_night': 'تصبح على خير',
-    
+
     // Home Screen
     'recommended_for_you': 'موصى لك',
     'recent_adhkar': 'الأذكار الأخيرة',
     'start': 'ابدأ',
-    
+
     // Adhkar Categories
-    'morning_adhkar': 'أذكار الصباح',
-    'evening_adhkar': 'أذكار المساء',
-    'after_prayer': 'أذكار بعد الصلاة',
-    'before_sleep': 'أذكار قبل النوم',
-    
+    'morning': 'أذكار الصباح',
+    'evening': 'أذكار المساء',
+    'after-prayer': 'أذكار بعد الصلاة',
+    'before-sleep': 'أذكار قبل النوم',
+
     // Subtitles
     'start_day_remembrance': 'ابدأ يومك بالذكر',
     'end_day_dhikr': 'اختتم يومك بالذكر',
     'post_prayer_remembrance': 'ذكر بعد الصلاة',
     'night_time_remembrance': 'ذكر وقت الليل',
-    
+
     // Navigation
     'Home': 'الرئيسية',
     'Dhikr': 'الأذكار',
     'Favorites': 'المفضلة',
     'Settings': 'الإعدادات',
-    'Prayer': 'مواعيد الصلاه',
+    'Prayer Times': 'مواعيد الصلاه',
     // Sidebar
     'settings_section': 'الإعدادات',
     'dark_mode': 'الوضع المظلم',
@@ -134,7 +173,7 @@ class LanguageService extends ChangeNotifier {
     'prayer_reminders': 'تذكيرات الصلاة',
     'audio_pronunciation': 'النطق الصوتي',
     'islamic_tools': 'الأدوات الإسلامية',
-    'prayer_times': 'أوقات الصلاة',
+    'prayer_times': 'مواعيد الصلاه',
     'qibla_direction': 'اتجاه القبلة',
     'islamic_calendar': 'التقويم الهجري',
     'app_section': 'التطبيق',
@@ -143,7 +182,7 @@ class LanguageService extends ChangeNotifier {
     'about': 'حول',
     'support_faq': 'الدعم والأسئلة الشائعة',
     'app_version': 'تطبيق الأذكار الإصدار 1.2.0',
-    
+
     // Headers
     'prayer_times_title': 'أوقات الصلاة',
     'qibla_title': 'اتجاه القبلة',
@@ -154,5 +193,22 @@ class LanguageService extends ChangeNotifier {
     // Dhikr Screen
     'Adhkar Categories': 'تصنيفات الأذكار',
     'Choose a category': 'اختر تصنيفًا',
+
+    //Time to read translation
+    'One Time': 'مرة واحدة',
+    'Two Times': 'مرتين',
+    'Three Times': 'ثلاث مرات',
+    'Four Times': 'أربع مرات',
+    'Five Times': 'خمس مرات',
+    'Six Times': 'ست مرات',
+    'Seven Times': 'سبع مرات',
+    'Eight Times': 'ثماني مرات',
+    'Nine Times': 'تسع مرات',
+    'Ten Times': 'عشر مرات',
+
+    // Favorites Screen
+    'Your Favorite Adhkar': 'الأذكار المفضلة',
+    'share': 'مشاركة',
+    'read_full': 'قراءة كاملة',
   };
 }

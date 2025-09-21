@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../services/language_service.dart';
+import '../services/theme_service.dart';
 
 class AppHeader extends StatelessWidget {
   final String? title;
@@ -24,7 +25,7 @@ class AppHeader extends StatelessWidget {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return Container(
-          color: Colors.white,
+          color: const Color.fromRGBO(33, 150, 243, 1),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -44,6 +45,19 @@ class AppHeader extends StatelessWidget {
                 ],
               ),
               const Spacer(),
+              // Theme toggle (top-right)
+              Consumer<ThemeService>(
+                builder: (context, themeService, _) {
+                  final isDark = themeService.isDark;
+                  return Tooltip(
+                    message: isDark ? 'Light mode' : 'Dark mode',
+                    child: IconButton(
+                      icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                      onPressed: themeService.toggleTheme,
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         );

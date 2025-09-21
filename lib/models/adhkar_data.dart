@@ -27,6 +27,7 @@ class Dhikr {
   final String translation;
   final int count;
   final String source;
+  final String categoryId;
 
   const Dhikr({
     required this.id,
@@ -35,14 +36,19 @@ class Dhikr {
     required this.translation,
     required this.count,
     required this.source,
+    required this.categoryId,
   });
 }
+
+
 
 class AdhkarData {
   static const List<AdhkarCategory> categories = [
     AdhkarCategory(id: 'morning', title: 'Morning Adhkar', arabicTitle: 'أذكار الصباح', arabicDescription: 'أذكار تُقال في الصباح', description: 'Remembrances to be recited in the morning', count: 12),
     AdhkarCategory(id: 'evening', title: 'Evening Adhkar', arabicTitle: 'أذكار المساء', arabicDescription: 'أذكار تُقال في المساء', description: 'Remembrances to be recited in the evening', count: 11),
-    AdhkarCategory(id: 'after-prayer', title: 'After Prayer', arabicTitle: 'أذكار بعد الصلاة', arabicDescription: 'أذكار تُقال بعد الصلوات الخمس', description: 'Dhikr to recite after the five daily prayers', count: 8),
+    AdhkarCategory(id: 'after-prayer', title: 'After Prayer Adhkar', arabicTitle: 'أذكار بعد الصلاة', arabicDescription: 'أذكار تُقال بعد الصلوات الخمس', description: 'Dhikr to recite after the five daily prayers', count: 8),
+   // AdhkarCategory(id: 'before-sleep', title: 'Before Sleep', arabicTitle: 'أذكار قبل النوم', arabicDescription: 'أذكار تُقال قبل النوم', description: 'Dhikr to recite before sleeping', count: 10),
+
   ];
 
   static List<Dhikr> getAdhkarList(String categoryId) {
@@ -53,6 +59,8 @@ class AdhkarData {
         return evening_data.items;
       case 'after-prayer':
         return after_prayer_data.items;
+      // case 'before-sleep':
+      //   return before_sleep_data.items;
       default:
         return const [];
     }

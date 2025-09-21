@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/language_service.dart';
 import '../models/adhkar_data.dart';
 import '../services/recent_service.dart';
+import '../widgets/screen_loader.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Current quote index for rotation
   int _currentQuoteIndex = 0;
+  // Language switching loading flag
+  bool _isSwitchingLanguage = false;
   
   // Timer for updating time-based content
   Timer? _timeUpdateTimer;
@@ -133,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Morning time (Fajr to Duha: 5 AM - 10 AM)
     if (hour >= 5 && hour < 10) {
       return {
-        'title': languageService.t('morning_adhkar'),
+        'title': languageService.t('morning'),
         'subtitle': languageService.t('start_day_remembrance'),
         'category': 'morning',
       };
@@ -141,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Afternoon (Duha to Asr: 10 AM - 3 PM)
     else if (hour >= 10 && hour < 15) {
       return {
-        'title': languageService.t('after_prayer'),
+        'title': languageService.t('after-prayer'),
         'subtitle': languageService.t('post_prayer_remembrance'),
         'category': 'after-prayer',
       };
@@ -149,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Evening (Maghrib to Isha: 6 PM - 9 PM)
     else if (hour >= 18 && hour < 21) {
       return {
-        'title': languageService.t('evening_adhkar'),
+        'title': languageService.t('evening'),
         'subtitle': languageService.t('end_day_dhikr'),
         'category': 'evening',
       };
@@ -157,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Night (Isha to Fajr: 9 PM - 5 AM)
     else {
       return {
-        'title': languageService.t('before_sleep'),
+        'title': languageService.t('before-sleep'),
         'subtitle': languageService.t('night_time_remembrance'),
         'category': 'before-sleep',
       };
@@ -177,28 +180,52 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
-        return _buildHomeScreen(languageService);
+        return ScreenLoader(
+          isLoading: _isSwitchingLanguage,
+          message: languageService.isArabic ? 'جاري تبديل اللغة...' : 'Switching Language...',
+          child: KeyedSubtree(
+            key: ValueKey<bool>(languageService.isArabic),
+            child: _buildHomeScreen(languageService),
+          ),
+        );
       },
     );
   }
 
   /// Main home screen content
   Widget _buildHomeScreen(LanguageService languageService) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Language toggle button
-          _buildLanguageToggle(languageService),
-          const SizedBox(height: 16),
-          _buildRecommendedCard(languageService),
-          const SizedBox(height: 24),
-          _buildRecentAdhkarSection(languageService),
-          const SizedBox(height: 24),
-          _buildQuoteSection(languageService),
-        ],
-      ),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Language toggle button
+              _buildLanguageToggle(languageService),
+              const SizedBox(height: 16),
+              _buildRecommendedCard(languageService),
+              const SizedBox(height: 24),
+              _buildRecentAdhkarSection(languageService),
+              const SizedBox(height: 24),
+              _buildQuoteSection(languageService),
+            ],
+          ),
+        ),
+        if (_isSwitchingLanguage)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.15),
+              child: const Center(
+                child: SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: CircularProgressIndicator(strokeWidth: 3),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -217,7 +244,15 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
-                onTap: () => languageService.setLanguage(false),
+                onTap: () {
+                  if (!languageService.isArabic) return; // already EN
+                  setState(() { _isSwitchingLanguage = true; });
+                  languageService.setLanguage(false);
+                  Future.delayed(const Duration(milliseconds: 350), () {
+                    if (!mounted) return;
+                    setState(() { _isSwitchingLanguage = false; });
+                  });
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -235,7 +270,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => languageService.setLanguage(true),
+                onTap: () {
+                  if (languageService.isArabic) return; // already AR
+                  setState(() { _isSwitchingLanguage = true; });
+                  languageService.setLanguage(true);
+                  Future.delayed(const Duration(milliseconds: 350), () {
+                    if (!mounted) return;
+                    setState(() { _isSwitchingLanguage = false; });
+                  });
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
