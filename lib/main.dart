@@ -36,24 +36,32 @@ class AdhkarApp extends StatelessWidget {
       ],
       child: Consumer<LanguageService>(
         builder: (context, languageService, child) {
-          return Consumer<ThemeService>(builder: (context, themeService, _) {
-            return MaterialApp(
-            title: 'Adhkar - Islamic Remembrance',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeService.themeMode,
-            debugShowCheckedModeBanner: false,
-            // RTL Support
-            locale: languageService.isArabic ? const Locale('ar') : const Locale('en'),
-            builder: (context, child) {
-              return Directionality(
-                textDirection: languageService.isRTL ? TextDirection.rtl : TextDirection.ltr,
-                child: child!,
+          return Consumer<ThemeService>(
+            builder: (context, themeService, _) {
+              return MaterialApp(
+                title: 'Adhkar - Islamic Remembrance',
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeService.themeMode,
+                debugShowCheckedModeBanner: false,
+                // RTL Support
+                locale:
+                    languageService.isArabic
+                        ? const Locale('ar')
+                        : const Locale('en'),
+                builder: (context, child) {
+                  return Directionality(
+                    textDirection:
+                        languageService.isRTL
+                            ? TextDirection.rtl
+                            : TextDirection.ltr,
+                    child: child!,
+                  );
+                },
+                home: const MainScreen(),
               );
             },
-            home: const MainScreen(),
           );
-          });
         },
       ),
     );
@@ -77,9 +85,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _transitionController = AnimationController(duration: const Duration(milliseconds: 250), vsync: this);
-    _fadeAnimation = CurvedAnimation(parent: _transitionController, curve: Curves.easeOut);
-    _scaleAnimation = Tween<double>(begin: 0.97, end: 1.0).animate(_fadeAnimation);
+    _transitionController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _transitionController,
+      curve: Curves.easeOut,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.97,
+      end: 1.0,
+    ).animate(_fadeAnimation);
     _transitionController.forward();
   }
 
@@ -142,15 +159,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       case 'settings':
         return languageService.t('settings');
       case 'prayer-times':
-        return languageService.t('prayer_times_title');
+        return languageService.t('prayer_times');
       case 'qibla':
-        return languageService.t('qibla_title');
+        return languageService.t('qibla');
       case 'statistics':
-        return languageService.t('statistics_title');
+        return languageService.t('statistics');
       case 'calendar':
-        return languageService.t('calendar_title');
+        return languageService.t('calendar');
       case 'backup':
-        return languageService.t('backup_title');
+        return languageService.t('backup');
       default:
         return null;
     }
@@ -181,7 +198,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 448),
                       child: AnimatedBuilder(
@@ -189,7 +209,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         builder: (context, child) {
                           return Transform.scale(
                             scale: _scaleAnimation.value,
-                            child: Opacity(opacity: _fadeAnimation.value, child: _renderScreen()),
+                            child: Opacity(
+                              opacity: _fadeAnimation.value,
+                              child: _renderScreen(),
+                            ),
                           );
                         },
                       ),
@@ -199,7 +222,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             onPressed: () => _handleTabChange('prayer-times'),
             backgroundColor: Colors.blue,
@@ -209,6 +233,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             activeTab: _activeTab,
             onTabChange: _handleTabChange,
           ),
+          // Ensure snackbar behavior doesn't affect bottom navigation
+          resizeToAvoidBottomInset: false,
         );
       },
     );

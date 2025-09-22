@@ -57,6 +57,8 @@ class LanguageService extends ChangeNotifier {
     'evening': 'Evening Adhkar',
     'after-prayer': 'After Prayer Adhkar',
     'before-sleep': 'Before Sleep Adhkar',
+    'morning_adhkar': 'Morning Adhkar',
+    'evening_adhkar': 'Evening Adhkar',
 
     // Subtitles
     'start_day_remembrance': 'Start your day with remembrance',
@@ -69,7 +71,11 @@ class LanguageService extends ChangeNotifier {
     'dhikr': 'Dhikr',
     'favorites': 'Favorites',
     'settings': 'Settings',
-    'prayer_Times': 'Prayer Times',
+    'prayer_times': 'Prayer Times',
+    'qibla': 'Qibla',
+    'statistics': 'Statistics',
+    'calendar': 'Calendar',
+    'backup': 'Backup',
 
     // Sidebar
     'settings_section': 'SETTINGS',
@@ -79,7 +85,6 @@ class LanguageService extends ChangeNotifier {
     'prayer_reminders': 'Prayer Reminders',
     'audio_pronunciation': 'Audio Pronunciation',
     'islamic_tools': 'ISLAMIC TOOLS',
-    'prayer_times': 'Prayer Times',
     'qibla_direction': 'Qibla Direction',
     'islamic_calendar': 'Islamic Calendar',
     'app_section': 'APP',
@@ -126,6 +131,7 @@ class LanguageService extends ChangeNotifier {
 
     // Favorites Screen
     'Your Favorite Adhkar': 'Your Favorite Adhkar',
+    'No favorites yet': 'No favorites yet',
     'share': 'Share',
     'read_full': 'Read Full',
   };
@@ -152,6 +158,8 @@ class LanguageService extends ChangeNotifier {
     'evening': 'أذكار المساء',
     'after-prayer': 'أذكار بعد الصلاة',
     'before-sleep': 'أذكار قبل النوم',
+    'morning_adhkar': 'أذكار الصباح',
+    'evening_adhkar': 'أذكار المساء',
 
     // Subtitles
     'start_day_remembrance': 'ابدأ يومك بالذكر',
@@ -160,11 +168,15 @@ class LanguageService extends ChangeNotifier {
     'night_time_remembrance': 'ذكر وقت الليل',
 
     // Navigation
-    'Home': 'الرئيسية',
-    'Dhikr': 'الأذكار',
-    'Favorites': 'المفضلة',
-    'Settings': 'الإعدادات',
-    'Prayer Times': 'مواعيد الصلاه',
+    'home': 'الرئيسية',
+    'dhikr': 'الأذكار',
+    'favorites': 'المفضلة',
+    'settings': 'الإعدادات',
+    'prayer_times': 'مواعيد الصلاه',
+    'qibla': 'القبلة',
+    'statistics': 'الإحصائيات',
+    'calendar': 'التقويم',
+    'backup': 'النسخ الاحتياطي',
     // Sidebar
     'settings_section': 'الإعدادات',
     'dark_mode': 'الوضع المظلم',
@@ -173,7 +185,6 @@ class LanguageService extends ChangeNotifier {
     'prayer_reminders': 'تذكيرات الصلاة',
     'audio_pronunciation': 'النطق الصوتي',
     'islamic_tools': 'الأدوات الإسلامية',
-    'prayer_times': 'مواعيد الصلاه',
     'qibla_direction': 'اتجاه القبلة',
     'islamic_calendar': 'التقويم الهجري',
     'app_section': 'التطبيق',
@@ -208,6 +219,7 @@ class LanguageService extends ChangeNotifier {
 
     // Favorites Screen
     'Your Favorite Adhkar': 'الأذكار المفضلة',
+    'No favorites yet': 'لا توجد أذكار مفضلة بعد',
     'share': 'مشاركة',
     'read_full': 'قراءة كاملة',
   };

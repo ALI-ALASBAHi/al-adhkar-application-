@@ -113,12 +113,12 @@ class CustomBottomNavigation extends StatelessWidget {
                     children: [
                       buildItem(
                         icon: Icons.home_outlined,
-                        label: languageService.t('Home'),
+                        label: languageService.t('home'),
                         tab: 'home',
                       ),
                       buildItem(
                         icon: Icons.menu_book_sharp,
-                        label: languageService.t('Dhikr'),
+                        label: languageService.t('dhikr'),
                         tab: 'dhikr',
                       ),
                     ],
@@ -126,9 +126,9 @@ class CustomBottomNavigation extends StatelessWidget {
                 ),
                 // FAB gap
                 Tooltip(
-                  message: languageService.t('Prayer Times'),
+                  message: languageService.t('prayer_times'),
                   child: Text(
-                    languageService.t('Prayer Times'),
+                    languageService.t('prayer_times'),
                     style: TextStyle(
                       color:
                           activeTab == 'prayer-times'
@@ -153,12 +153,12 @@ class CustomBottomNavigation extends StatelessWidget {
                     children: [
                       buildItem(
                         icon: Icons.favorite_border,
-                        label: languageService.t('Favorites'),
+                        label: languageService.t('favorites'),
                         tab: 'favorites',
                       ),
                       buildItem(
                         icon: Icons.settings_outlined,
-                        label: languageService.t('Settings'),
+                        label: languageService.t('settings'),
                         tab: 'settings',
                       ),
                     ],

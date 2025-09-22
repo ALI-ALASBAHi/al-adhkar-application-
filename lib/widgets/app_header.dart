@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../services/language_service.dart';
-import '../services/theme_service.dart';
 
 class AppHeader extends StatelessWidget {
   final String? title;
@@ -30,34 +29,36 @@ class AppHeader extends StatelessWidget {
           child: Row(
             children: [
               if (showBackButton)
-                IconButton(icon: const Icon(Icons.arrow_back), onPressed: onBack)
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: onBack,
+                )
               else
-                IconButton(icon: const Icon(Icons.menu), onPressed: onMenuClick),
+                IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: onMenuClick,
+                ),
               const SizedBox(width: 4),
               // App logo next to menu
               const _AppLogo(),
               const SizedBox(width: 8),
               Column(
-                crossAxisAlignment: languageService.isRTL ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    languageService.isRTL
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                 children: [
-                  Text(title ?? languageService.t('app_title'), style: Theme.of(context).textTheme.titleLarge),
-                  Text(languageService.t('app_subtitle'), style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    title ?? languageService.t('app_title'),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Text(
+                    languageService.t('app_subtitle'),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
               const Spacer(),
-              // Theme toggle (top-right)
-              Consumer<ThemeService>(
-                builder: (context, themeService, _) {
-                  final isDark = themeService.isDark;
-                  return Tooltip(
-                    message: isDark ? 'Light mode' : 'Dark mode',
-                    child: IconButton(
-                      icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-                      onPressed: themeService.toggleTheme,
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         );
@@ -75,7 +76,8 @@ class _AppLogo extends StatelessWidget {
     return FutureBuilder(
       future: rootBundle.load('assets/logo.png'),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            !snapshot.hasError) {
           return SizedBox(
             width: 28,
             height: 28,
@@ -91,5 +93,3 @@ class _AppLogo extends StatelessWidget {
     );
   }
 }
-
-
