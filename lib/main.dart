@@ -235,6 +235,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           ),
           // Ensure snackbar behavior doesn't affect bottom navigation
           resizeToAvoidBottomInset: false,
+          extendBody: true,
         );
       },
     );

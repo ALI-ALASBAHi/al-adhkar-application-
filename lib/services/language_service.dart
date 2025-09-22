@@ -51,6 +51,7 @@ class LanguageService extends ChangeNotifier {
     'recommended_for_you': 'Recommended For You',
     'recent_adhkar': 'Recent Adhkar',
     'start': 'Start',
+    'daily_reflection': 'Daily Reflection',
 
     // Adhkar Categories
     'morning': 'Morning Adhkar',
@@ -152,6 +153,7 @@ class LanguageService extends ChangeNotifier {
     'recommended_for_you': 'موصى لك',
     'recent_adhkar': 'الأذكار الأخيرة',
     'start': 'ابدأ',
+    'daily_reflection': 'التأمل اليومي',
 
     // Adhkar Categories
     'morning': 'أذكار الصباح',

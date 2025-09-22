@@ -19,10 +19,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentQuoteIndex = 0;
   // Language switching loading flag
   bool _isSwitchingLanguage = false;
-  
+
   // Timer for updating time-based content
   Timer? _timeUpdateTimer;
-  
+
   // Quranic verses database with Arabic and English translations
   final List<Map<String, String>> _quotes = [
     {
@@ -31,7 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reference': 'Quran 62:10',
     },
     {
-      'text_en': '"And whoever turns away from My remembrance - indeed, he will have a depressed life"',
+      'text_en':
+          '"And whoever turns away from My remembrance - indeed, he will have a depressed life"',
       'text_ar': '"وَمَنْ أَعْرَضَ عَن ذِكْرِي فَإِنَّ لَهُ مَعِيشَةً ضَنكًا"',
       'reference': 'Quran 20:124',
     },
@@ -41,18 +42,23 @@ class _HomeScreenState extends State<HomeScreen> {
       'reference': 'Quran 2:152',
     },
     {
-      'text_en': '"And it is He who created the heavens and earth in truth. And the day He says, "Be," and it is, His word is the truth"',
-      'text_ar': '"وَهُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ بِالْحَقِّ ۖ وَيَوْمَ يَقُولُ كُن فَيَكُونُ ۚ قَوْلُهُ الْحَقُّ"',
+      'text_en':
+          '"And it is He who created the heavens and earth in truth. And the day He says, "Be," and it is, His word is the truth"',
+      'text_ar':
+          '"وَهُوَ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ بِالْحَقِّ ۖ وَيَوْمَ يَقُولُ كُن فَيَكُونُ ۚ قَوْلُهُ الْحَقُّ"',
       'reference': 'Quran 6:73',
     },
     {
-      'text_en': '"And whoever relies upon Allah - then He is sufficient for him"',
+      'text_en':
+          '"And whoever relies upon Allah - then He is sufficient for him"',
       'text_ar': '"وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ"',
       'reference': 'Quran 65:3',
     },
     {
-      'text_en': '"And whoever does righteous deeds, whether male or female, while being a believer - those will enter Paradise"',
-      'text_ar': '"وَمَن يَعْمَلْ مِنَ الصَّالِحَاتِ مِن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَأُولَٰئِكَ يَدْخُلُونَ الْجَنَّةَ"',
+      'text_en':
+          '"And whoever does righteous deeds, whether male or female, while being a believer - those will enter Paradise"',
+      'text_ar':
+          '"وَمَن يَعْمَلْ مِنَ الصَّالِحَاتِ مِن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَأُولَٰئِكَ يَدْخُلُونَ الْجَنَّةَ"',
       'reference': 'Quran 4:124',
     },
     {
@@ -61,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
       'reference': 'Quran 65:2',
     },
     {
-      'text_en': '"And whoever fears Allah - He will make for him ease in his matter"',
+      'text_en':
+          '"And whoever fears Allah - He will make for him ease in his matter"',
       'text_ar': '"وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مِنْ أَمْرِهِ يُسْرًا"',
       'reference': 'Quran 65:4',
     },
@@ -105,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-
   /// Gets current time formatted for display
   String _getCurrentTime() {
     final now = DateTime.now();
@@ -116,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _getTimeBasedGreeting(LanguageService languageService) {
     final now = DateTime.now();
     final hour = now.hour;
-    
+
     if (hour >= 5 && hour < 12) {
       return languageService.t('good_morning');
     } else if (hour >= 12 && hour < 17) {
@@ -132,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, String> _getRecommendedAdhkar(LanguageService languageService) {
     final now = DateTime.now();
     final hour = now.hour;
-    
+
     // Morning time (Fajr to Duha: 5 AM - 10 AM)
     if (hour >= 5 && hour < 10) {
       return {
@@ -171,10 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToAdhkar(String category) {
     // TODO: Implement navigation to adhkar screen with specific category
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Opening $category adhkar...')),
+      SnackBar(
+        content: Text('Opening $category adhkar...'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.black,
+        margin: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 16, // keeps it above BottomAppBar + FAB
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, languageService, child) {
         return ScreenLoader(
           isLoading: _isSwitchingLanguage,
-          message: languageService.isArabic ? 'جاري تبديل اللغة...' : 'Switching Language...',
+          message:
+              languageService.isArabic
+                  ? 'جاري تبديل اللغة...'
+                  : 'Switching Language...',
           child: KeyedSubtree(
             key: ValueKey<bool>(languageService.isArabic),
             child: _buildHomeScreen(languageService),
@@ -232,7 +250,10 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Language toggle button
   Widget _buildLanguageToggle(LanguageService languageService) {
     return Row(
-      mainAxisAlignment: languageService.isRTL ? MainAxisAlignment.start : MainAxisAlignment.end,
+      mainAxisAlignment:
+          languageService.isRTL
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.end,
       children: [
         Container(
           decoration: BoxDecoration(
@@ -246,23 +267,36 @@ class _HomeScreenState extends State<HomeScreen> {
               GestureDetector(
                 onTap: () {
                   if (!languageService.isArabic) return; // already EN
-                  setState(() { _isSwitchingLanguage = true; });
+                  setState(() {
+                    _isSwitchingLanguage = true;
+                  });
                   languageService.setLanguage(false);
                   Future.delayed(const Duration(milliseconds: 350), () {
                     if (!mounted) return;
-                    setState(() { _isSwitchingLanguage = false; });
+                    setState(() {
+                      _isSwitchingLanguage = false;
+                    });
                   });
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: languageService.isArabic ? Colors.transparent : const Color(0xFF3B82F6),
+                    color:
+                        languageService.isArabic
+                            ? Colors.transparent
+                            : const Color(0xFF3B82F6),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
                     'EN',
                     style: TextStyle(
-                      color: languageService.isArabic ? const Color(0xFF6B7280) : Colors.white,
+                      color:
+                          languageService.isArabic
+                              ? const Color(0xFF6B7280)
+                              : Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -272,23 +306,36 @@ class _HomeScreenState extends State<HomeScreen> {
               GestureDetector(
                 onTap: () {
                   if (languageService.isArabic) return; // already AR
-                  setState(() { _isSwitchingLanguage = true; });
+                  setState(() {
+                    _isSwitchingLanguage = true;
+                  });
                   languageService.setLanguage(true);
                   Future.delayed(const Duration(milliseconds: 350), () {
                     if (!mounted) return;
-                    setState(() { _isSwitchingLanguage = false; });
+                    setState(() {
+                      _isSwitchingLanguage = false;
+                    });
                   });
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: languageService.isArabic ? const Color(0xFF3B82F6) : Colors.transparent,
+                    color:
+                        languageService.isArabic
+                            ? const Color(0xFF3B82F6)
+                            : Colors.transparent,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
                     'عربي',
                     style: TextStyle(
-                      color: languageService.isArabic ? Colors.white : const Color(0xFF6B7280),
+                      color:
+                          languageService.isArabic
+                              ? Colors.white
+                              : const Color(0xFF6B7280),
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -302,12 +349,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   /// Time-based recommendation card with Arabic support
   Widget _buildRecommendedCard(LanguageService languageService) {
     final greeting = _getTimeBasedGreeting(languageService);
     final recommendation = _getRecommendedAdhkar(languageService);
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -363,10 +409,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Recommendation subtitle
                 Text(
                   recommendation['subtitle']!,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
             ),
@@ -392,9 +435,15 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Recent Adhkar quick access section with Arabic support
   Widget _buildRecentAdhkarSection(LanguageService languageService) {
     final recents = context.watch<RecentService?>()?.recent ?? const <String>[];
-    final recentCategories = recents
-        .map((id) => AdhkarData.categories.firstWhere((c) => c.id == id, orElse: () => AdhkarData.categories.first))
-        .toList();
+    final recentCategories =
+        recents
+            .map(
+              (id) => AdhkarData.categories.firstWhere(
+                (c) => c.id == id,
+                orElse: () => AdhkarData.categories.first,
+              ),
+            )
+            .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +484,12 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, i) {
                 final c = recentCategories[i];
-                final icon = c.id == 'morning' ? Icons.wb_sunny : c.id == 'evening' ? Icons.nightlight_round : Icons.star;
+                final icon =
+                    c.id == 'morning'
+                        ? Icons.wb_sunny
+                        : c.id == 'evening'
+                        ? Icons.nightlight_round
+                        : Icons.star;
                 return SizedBox(
                   width: 120,
                   child: _buildCircularButton(
@@ -470,11 +524,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Color(0xFF3B82F6),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(icon, color: Colors.white, size: 24),
           ),
           const SizedBox(height: 8),
           Text(
@@ -495,8 +545,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildQuoteSection(LanguageService languageService) {
     final currentQuote = _quotes[_currentQuoteIndex];
     final isArabic = languageService.isArabic;
-    final verseText = isArabic ? currentQuote['text_ar']! : currentQuote['text_en']!;
-    
+    final verseText =
+        isArabic ? currentQuote['text_ar']! : currentQuote['text_en']!;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -506,15 +557,24 @@ class _HomeScreenState extends State<HomeScreen> {
         border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Star icon
-          const Icon(
-            Icons.star_outline,
-            color: Color(0xFF3B82F6),
-            size: 24,
+          // Row for icon + text
+          Row(
+            children: [
+              const Icon(
+                Icons.star_outline,
+                color: Color(0xFF3B82F6),
+                size: 24,
+              ),
+              Text('  '),
+              Text(languageService.t('daily_reflection')),
+              const SizedBox(width: 8), // spacing between text and icon
+            ],
           ),
           const SizedBox(height: 16),
-          // Quote text with proper Arabic font support
+
+          // Quote text
           Text(
             verseText,
             style: TextStyle(
@@ -523,16 +583,25 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 1.5,
               fontFamily: isArabic ? 'Amiri' : null,
             ),
-            textAlign: TextAlign.center,
+            textAlign: isArabic ? TextAlign.center : TextAlign.justify,
             textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
           ),
+
           const SizedBox(height: 12),
-          // Reference (tappable in future)
+
+          // Reference
           GestureDetector(
             onTap: () {
-              // TODO: Open full ayah in Quran page
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Opening ${currentQuote['reference']}...')),
+                SnackBar(
+                  content: Text('Opening ${currentQuote['reference']}...'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.black,
+                  margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               );
             },
             child: Text(
@@ -543,6 +612,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.w500,
                 decoration: TextDecoration.underline,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -550,5 +620,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
