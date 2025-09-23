@@ -2,7 +2,6 @@ import 'package:adkhar_project/services/language_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/favorite_service.dart';
-import '../services/theme_service.dart';
 import '../models/adhkar_data.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -12,57 +11,47 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final favs = context.watch<FavoriteService>().favorites;
     final lang = context.watch<LanguageService>();
-    final themeService = context.watch<ThemeService>();
-
-    final readingTheme = themeService.getReadingTheme();
-    final isReadingDark = themeService.isReadingDarkMode;
 
     if (favs.isEmpty) {
-      return Theme(
-        data: readingTheme,
-        child: Center(
-          child: Text(
-            lang.t('No favorites yet'),
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: isReadingDark ? Colors.white70 : Colors.black,
-            ),
+      return Center(
+        child: Text(
+          lang.t('No favorites yet'),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
           ),
         ),
       );
     }
 
-    return Theme(
-      data: readingTheme,
-      child: Column(
-        children: [
-          // Custom header to match the app design
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Text(
-              lang.t('Your Favorite Adhkar'),
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: isReadingDark ? Colors.white : Colors.black,
-              ),
-              textAlign: TextAlign.center,
+    return Column(
+      children: [
+        // Custom header
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Text(
+            lang.t('Your Favorite Adhkar'),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
+            textAlign: TextAlign.center,
           ),
-          // List of favorites
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: favs.length,
-              itemBuilder: (context, index) {
-                final Dhikr dhikr = favs[index];
-                return _FavoriteCard(dhikr: dhikr);
-              },
-            ),
+        ),
+        // List of favorites
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: favs.length,
+            itemBuilder: (context, index) {
+              final Dhikr dhikr = favs[index];
+              return _FavoriteCard(dhikr: dhikr);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -76,19 +65,14 @@ class _FavoriteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final favService = context.read<FavoriteService>();
     final lang = context.watch<LanguageService>();
-    final themeService = context.watch<ThemeService>();
     final isFav = favService.isFavorite(dhikr);
-    final isReadingDark = themeService.isReadingDarkMode;
 
     return Card(
-      color: isReadingDark ? const Color(0xFF1E293B) : Colors.white,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color:
-              isReadingDark
-                  ? const Color(0xFF334155)
-                  : const Color.fromRGBO(229, 231, 235, 1),
+        side: const BorderSide(
+          color: Color.fromRGBO(229, 231, 235, 1),
           width: 1,
         ),
       ),
@@ -103,27 +87,11 @@ class _FavoriteCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    () {
-                      final category = AdhkarData.categories.firstWhere(
-                        (c) => c.id == dhikr.categoryId,
-                        orElse:
-                            () => AdhkarCategory(
-                              id: dhikr.categoryId,
-                              title: dhikr.categoryId,
-                              arabicTitle: dhikr.categoryId,
-                              arabicDescription: '',
-                              description: '',
-                              count: 0,
-                            ),
-                      );
-                      return lang.isArabic
-                          ? category.arabicTitle
-                          : category.title;
-                    }(),
-                    style: TextStyle(
+                    lang.t(getCategoryKey(dhikr.categoryId)),
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isReadingDark ? Colors.white : Colors.black,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -146,21 +114,7 @@ class _FavoriteCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                () {
-                  final category = AdhkarData.categories.firstWhere(
-                    (c) => c.id == dhikr.categoryId,
-                    orElse:
-                        () => AdhkarCategory(
-                          id: dhikr.categoryId,
-                          title: dhikr.categoryId,
-                          arabicTitle: dhikr.categoryId,
-                          arabicDescription: '',
-                          description: '',
-                          count: 0,
-                        ),
-                  );
-                  return lang.isArabic ? category.arabicTitle : category.title;
-                }(),
+                lang.t(getCategoryKey(dhikr.categoryId)),
                 style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white,
@@ -175,23 +129,17 @@ class _FavoriteCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color:
-                    isReadingDark
-                        ? const Color(0xFF334155)
-                        : Colors.grey.shade100,
+                color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 dhikr.arabic,
                 textAlign: TextAlign.center,
                 textDirection: TextDirection.rtl,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   height: 1.5,
-                  color:
-                      isReadingDark
-                          ? Colors.white
-                          : const Color.fromARGB(255, 0, 0, 0),
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -202,9 +150,9 @@ class _FavoriteCard extends StatelessWidget {
               dhikr.translation,
               textAlign: TextAlign.justify,
               textDirection: TextDirection.ltr,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
-                color: isReadingDark ? Colors.white70 : Colors.black87,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 12),
@@ -220,12 +168,8 @@ class _FavoriteCard extends StatelessWidget {
                   icon: const Icon(Icons.menu_book, size: 18),
                   label: Text(lang.t('read_full')),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isReadingDark
-                            ? const Color(0xFF334155)
-                            : const Color.fromARGB(255, 255, 255, 255),
-                    foregroundColor:
-                        isReadingDark ? Colors.white : Colors.black,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
@@ -239,10 +183,8 @@ class _FavoriteCard extends StatelessWidget {
                   icon: const Icon(Icons.share, size: 18),
                   label: Text(lang.t('share')),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isReadingDark ? const Color(0xFF334155) : Colors.blue,
-                    foregroundColor:
-                        isReadingDark ? Colors.white : Colors.white,
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
                   ),
                 ),
               ],
@@ -254,14 +196,56 @@ class _FavoriteCard extends StatelessWidget {
   }
 }
 
+// Map all possible IDs to the correct LanguageService keys
+String getCategoryKey(String categoryId) {
+  switch (categoryId) {
+    case 'morning':
+    case 'morning_adhkar':
+    case 'Morning Adhkar':
+      return 'morning';
+
+    case 'evening':
+    case 'evening_adhkar':
+    case 'Evening Adhkar':
+      return 'evening';
+
+    case 'after-prayer':
+    case 'after_prayer':
+    case 'After Prayer Adhkar':
+      return 'after-prayer';
+
+    case 'before-sleep':
+    case 'before_sleep':
+    case 'Before Sleep Adhkar':
+      return 'before-sleep';
+
+    default:
+      return categoryId; // fallback: return as-is
+  }
+}
+
 Color categoryColor(String id) {
   switch (id) {
     case 'morning':
+    case 'morning_adhkar':
+    case 'Morning Adhkar':
       return Colors.orange;
+
     case 'evening':
+    case 'evening_adhkar':
+    case 'Evening Adhkar':
       return Colors.indigo;
+
     case 'after-prayer':
+    case 'after_prayer':
+    case 'After Prayer Adhkar':
       return Colors.green;
+
+    case 'before-sleep':
+    case 'before_sleep':
+    case 'Before Sleep Adhkar':
+      return Colors.purple;
+
     default:
       return Colors.grey;
   }

@@ -552,7 +552,6 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                       ),
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         // Bottom-left: Times to read
                                         Padding(
@@ -575,10 +574,7 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
+                                        const Spacer(),
                                         const SizedBox(width: 6),
                                         TextButton.icon(
                                           onPressed: _handleReset,
