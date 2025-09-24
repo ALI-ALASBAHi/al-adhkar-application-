@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../services/language_service.dart';
+import '../services/hijri_service.dart';
 import '../models/adhkar_data.dart';
 import '../services/recent_service.dart';
 import '../widgets/screen_loader.dart';
@@ -18,6 +19,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Current quote index for rotation
   int _currentQuoteIndex = 0;
+
+  // Hijri service for consistent date calculations
+  final HijriService _hijriService = HijriService();
   // Language switching loading flag
   bool _isSwitchingLanguage = false;
 
@@ -186,14 +190,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  /// Simple Hijri date conversion (approximate) with language support
+  /// Hijri date conversion using HijriService for consistency with calendar
   String _getHijriDate(LanguageService languageService) {
     final now = DateTime.now();
-    // Simple approximation: Hijri year is roughly 622 years behind Gregorian
-    // This is a basic implementation - for production use a proper Hijri library
-    final hijriYear = now.year - 622;
-    final hijriMonth = now.month;
-    final hijriDay = now.day;
+    final hijriDate = _hijriService.gregorianToHijri(now);
+
+    final hijriYear = hijriDate['year']!;
+    final hijriMonth = hijriDate['month']!;
+    final hijriDay = hijriDate['day']!;
 
     if (languageService.isArabic) {
       final weekdays = [

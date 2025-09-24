@@ -15,7 +15,8 @@ class SettingsScreen extends StatelessWidget {
 class PrayerTimesScreen extends StatelessWidget {
   const PrayerTimesScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Prayer Times'));
+  Widget build(BuildContext context) =>
+      const Center(child: Text('Prayer Times'));
 }
 
 class QiblaScreen extends StatelessWidget {
@@ -30,16 +31,9 @@ class StatisticsScreen extends StatelessWidget {
   Widget build(BuildContext context) => const Center(child: Text('Statistics'));
 }
 
-class IslamicCalendarScreen extends StatelessWidget {
-  const IslamicCalendarScreen({super.key});
-  @override
-  Widget build(BuildContext context) => const Center(child: Text('Islamic Calendar'));
-}
-
 class BackupSyncScreen extends StatelessWidget {
   const BackupSyncScreen({super.key});
   @override
-  Widget build(BuildContext context) => const Center(child: Text('Backup & Sync'));
+  Widget build(BuildContext context) =>
+      const Center(child: Text('Backup & Sync'));
 }
-
-

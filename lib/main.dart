@@ -14,6 +14,7 @@ import 'services/language_service.dart';
 import 'services/recent_service.dart';
 import 'services/theme_service.dart';
 import 'services/favorite_service.dart';
+import 'screens/islamic_calendar_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

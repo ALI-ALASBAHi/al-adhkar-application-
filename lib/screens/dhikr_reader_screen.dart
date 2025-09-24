@@ -33,6 +33,23 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
     _pageController = PageController(initialPage: _currentIndex);
   }
 
+  /// Converts numbers to Arabic numerals if language is Arabic
+  String _convertToArabicNumbers(String text, LanguageService languageService) {
+    if (!languageService.isArabic) return text;
+
+    return text
+        .replaceAll('0', '٠')
+        .replaceAll('1', '١')
+        .replaceAll('2', '٢')
+        .replaceAll('3', '٣')
+        .replaceAll('4', '٤')
+        .replaceAll('5', '٥')
+        .replaceAll('6', '٦')
+        .replaceAll('7', '٧')
+        .replaceAll('8', '٨')
+        .replaceAll('9', '٩');
+  }
+
   void _handleTapNext() {
     if (_items.isEmpty) return;
     final target = _items[_currentIndex].count;
@@ -561,7 +578,10 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                           // Times to read with translation
                                           child: Text(
                                             language.timesTranslation(
-                                              total.toString(),
+                                              _convertToArabicNumbers(
+                                                total.toString(),
+                                                language,
+                                              ),
                                             ),
                                             style: TextStyle(
                                               fontSize: 12,

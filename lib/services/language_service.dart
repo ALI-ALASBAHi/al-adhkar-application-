@@ -135,6 +135,15 @@ class LanguageService extends ChangeNotifier {
     'No favorites yet': 'No favorites yet',
     'share': 'Share',
     'read_full': 'Read Full',
+
+    // Calendar
+    'hijri': 'Hijri',
+    'gregorian': 'Gregorian',
+    'corresponding_to': 'Corresponding to',
+    'sacred_month': 'Sacred month',
+    'today': 'Today',
+    'islamic_event': 'Islamic Event',
+    'important_dates_this_month': 'Important Dates This Month',
   };
 
   // Arabic translations
@@ -224,5 +233,14 @@ class LanguageService extends ChangeNotifier {
     'No favorites yet': 'لا توجد أذكار مفضلة بعد',
     'share': 'مشاركة',
     'read_full': 'قراءة كاملة',
+
+    // Calendar
+    'hijri': 'هجري',
+    'gregorian': 'ميلادي',
+    'corresponding_to': 'مقابل',
+    'sacred_month': 'شهر حرام',
+    'today': 'اليوم',
+    'islamic_event': 'مناسبة إسلامية',
+    'important_dates_this_month': 'التواريخ المهمة هذا الشهر',
   };
 }
