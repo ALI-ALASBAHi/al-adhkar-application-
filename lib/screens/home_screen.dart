@@ -491,16 +491,17 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 8),
 
           // Hijri date
-          const Spacer(),
-          Text(
-            _getHijriDate(languageService),
-            style: TextStyle(
-              color: const Color(0xFF3B82F6),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              fontFamily: languageService.isArabic ? 'Amiri' : null,
+          Center(
+            child: Text(
+              _getHijriDate(languageService),
+              style: TextStyle(
+                color: const Color(0xFF3B82F6),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                fontFamily: languageService.isArabic ? 'Amiri' : null,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),

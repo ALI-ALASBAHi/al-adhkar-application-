@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../services/language_service.dart';
 
-class AppHeader extends StatelessWidget {
+class AppHeader extends StatefulWidget {
   final String? title;
   final String subtitle;
   final VoidCallback? onMenuClick;
@@ -20,6 +20,11 @@ class AppHeader extends StatelessWidget {
   });
 
   @override
+  State<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends State<AppHeader> {
+  @override
   Widget build(BuildContext context) {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
@@ -28,15 +33,15 @@ class AppHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
-              if (showBackButton)
+              if (widget.showBackButton)
                 IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  onPressed: onBack,
+                  onPressed: widget.onBack,
                 )
               else
                 IconButton(
                   icon: const Icon(Icons.menu),
-                  onPressed: onMenuClick,
+                  onPressed: widget.onMenuClick,
                 ),
               const SizedBox(width: 4),
               // App logo next to menu
@@ -49,7 +54,7 @@ class AppHeader extends StatelessWidget {
                         : CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title ?? languageService.t('app_title'),
+                    widget.title ?? languageService.t('app_title'),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(
@@ -59,10 +64,82 @@ class AppHeader extends StatelessWidget {
                 ],
               ),
               const Spacer(),
+              // Language toggle button
+              _buildLanguageToggle(languageService),
             ],
           ),
         );
       },
+    );
+  }
+
+  /// Language toggle button
+  Widget _buildLanguageToggle(LanguageService languageService) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () {
+              if (!languageService.isArabic) return; // already EN
+              languageService.setLanguage(false);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color:
+                    languageService.isArabic
+                        ? Colors.transparent
+                        : Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                'EN',
+                style: TextStyle(
+                  color:
+                      languageService.isArabic
+                          ? Colors.white
+                          : const Color(0xFF3B82F6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              if (languageService.isArabic) return; // already AR
+              languageService.setLanguage(true);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color:
+                    languageService.isArabic
+                        ? Colors.white.withOpacity(0.9)
+                        : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                'عربي',
+                style: TextStyle(
+                  color:
+                      languageService.isArabic
+                          ? const Color(0xFF3B82F6)
+                          : Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
