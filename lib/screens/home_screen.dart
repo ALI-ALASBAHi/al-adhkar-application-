@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../services/language_service.dart';
 import '../models/adhkar_data.dart';
 import '../services/recent_service.dart';
@@ -112,10 +113,162 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  /// Gets current time formatted for display
-  String _getCurrentTime() {
+  /// Gets current time formatted for display with language support
+  String _getCurrentTime(LanguageService languageService) {
     final now = DateTime.now();
-    return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    final timeString =
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+    return _convertToArabicNumbers(timeString, languageService);
+  }
+
+  /// Gets current AM/PM indicator with language support
+  String _getAmPm(LanguageService languageService) {
+    final now = DateTime.now();
+    if (languageService.isArabic) {
+      return now.hour >= 12 ? 'م' : 'ص';
+    } else {
+      return now.hour >= 12 ? 'PM' : 'AM';
+    }
+  }
+
+  /// Converts numbers to Arabic numerals if language is Arabic
+  String _convertToArabicNumbers(String text, LanguageService languageService) {
+    if (!languageService.isArabic) return text;
+
+    return text
+        .replaceAll('0', '٠')
+        .replaceAll('1', '١')
+        .replaceAll('2', '٢')
+        .replaceAll('3', '٣')
+        .replaceAll('4', '٤')
+        .replaceAll('5', '٥')
+        .replaceAll('6', '٦')
+        .replaceAll('7', '٧')
+        .replaceAll('8', '٨')
+        .replaceAll('9', '٩');
+  }
+
+  /// Gets current Gregorian date formatted for display with language support
+  String _getGregorianDate(LanguageService languageService) {
+    final now = DateTime.now();
+
+    if (languageService.isArabic) {
+      final weekdays = [
+        'الاثنين',
+        'الثلاثاء',
+        'الأربعاء',
+        'الخميس',
+        'الجمعة',
+        'السبت',
+        'الأحد',
+      ];
+      final months = [
+        'يناير',
+        'فبراير',
+        'مارس',
+        'أبريل',
+        'مايو',
+        'يونيو',
+        'يوليو',
+        'أغسطس',
+        'سبتمبر',
+        'أكتوبر',
+        'نوفمبر',
+        'ديسمبر',
+      ];
+
+      final weekday = weekdays[now.weekday - 1];
+      final month = months[now.month - 1];
+      final dateString = '$weekday، $month ${now.day}، ${now.year}';
+      return _convertToArabicNumbers(dateString, languageService);
+    } else {
+      return DateFormat('EEEE, MMMM d, yyyy').format(now);
+    }
+  }
+
+  /// Simple Hijri date conversion (approximate) with language support
+  String _getHijriDate(LanguageService languageService) {
+    final now = DateTime.now();
+    // Simple approximation: Hijri year is roughly 622 years behind Gregorian
+    // This is a basic implementation - for production use a proper Hijri library
+    final hijriYear = now.year - 622;
+    final hijriMonth = now.month;
+    final hijriDay = now.day;
+
+    if (languageService.isArabic) {
+      final weekdays = [
+        'الاثنين',
+        'الثلاثاء',
+        'الأربعاء',
+        'الخميس',
+        'الجمعة',
+        'السبت',
+        'الأحد',
+      ];
+      final months = [
+        'محرم',
+        'صفر',
+        'ربيع الأول',
+        'ربيع الثاني',
+        'جمادى الأولى',
+        'جمادى الثانية',
+        'رجب',
+        'شعبان',
+        'رمضان',
+        'شوال',
+        'ذو القعدة',
+        'ذو الحجة',
+      ];
+
+      final weekday = weekdays[now.weekday - 1];
+      final month = months[hijriMonth - 1];
+      final dateString = '$weekday، $hijriDay $month، $hijriYear هـ';
+      return _convertToArabicNumbers(dateString, languageService);
+    } else {
+      final weekdays = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ];
+      final months = [
+        'Muharram',
+        'Safar',
+        'Rabi\' al-awwal',
+        'Rabi\' al-thani',
+        'Jumada al-awwal',
+        'Jumada al-thani',
+        'Rajab',
+        'Sha\'ban',
+        'Ramadan',
+        'Shawwal',
+        'Dhu al-Qi\'dah',
+        'Dhu al-Hijjah',
+      ];
+
+      final weekday = weekdays[now.weekday - 1];
+      final month = months[hijriMonth - 1];
+      return '$weekday, $hijriDay $month, $hijriYear AH';
+    }
+  }
+
+  /// Gets appropriate time-based icon
+  IconData _getTimeBasedIcon() {
+    final now = DateTime.now();
+    final hour = now.hour;
+
+    if (hour >= 5 && hour < 12) {
+      return Icons.wb_sunny; // Morning sun
+    } else if (hour >= 12 && hour < 17) {
+      return Icons.wb_sunny_outlined; // Afternoon sun
+    } else if (hour >= 17 && hour < 21) {
+      return Icons.wb_twilight; // Evening
+    } else {
+      return Icons.nightlight_round; // Night moon
+    }
   }
 
   /// Gets time-based greeting using language service
@@ -219,8 +372,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Language toggle button
-              _buildLanguageToggle(languageService),
+              // Greeting container
+              _buildGreetingContainer(languageService),
               const SizedBox(height: 16),
               _buildRecommendedCard(languageService),
               const SizedBox(height: 24),
@@ -247,111 +400,115 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Language toggle button
-  Widget _buildLanguageToggle(LanguageService languageService) {
-    return Row(
-      mainAxisAlignment:
-          languageService.isRTL
-              ? MainAxisAlignment.start
-              : MainAxisAlignment.end,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE5E7EB)),
+  /// Greeting container with time, date, and Hijri date
+  Widget _buildGreetingContainer(LanguageService languageService) {
+    final greeting = _getTimeBasedGreeting(languageService);
+    final timeIcon = _getTimeBasedIcon();
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Greeting with icon
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  if (!languageService.isArabic) return; // already EN
-                  setState(() {
-                    _isSwitchingLanguage = true;
-                  });
-                  languageService.setLanguage(false);
-                  Future.delayed(const Duration(milliseconds: 350), () {
-                    if (!mounted) return;
-                    setState(() {
-                      _isSwitchingLanguage = false;
-                    });
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        languageService.isArabic
-                            ? Colors.transparent
-                            : const Color(0xFF3B82F6),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    'EN',
-                    style: TextStyle(
-                      color:
-                          languageService.isArabic
-                              ? const Color(0xFF6B7280)
-                              : Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (languageService.isArabic) return; // already AR
-                  setState(() {
-                    _isSwitchingLanguage = true;
-                  });
-                  languageService.setLanguage(true);
-                  Future.delayed(const Duration(milliseconds: 350), () {
-                    if (!mounted) return;
-                    setState(() {
-                      _isSwitchingLanguage = false;
-                    });
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        languageService.isArabic
-                            ? const Color(0xFF3B82F6)
-                            : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    'عربي',
-                    style: TextStyle(
-                      color:
-                          languageService.isArabic
-                              ? Colors.white
-                              : const Color(0xFF6B7280),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+              Icon(timeIcon, color: const Color(0xFF3B82F6), size: 24),
+              const SizedBox(width: 8),
+              Text(
+                greeting,
+                style: const TextStyle(
+                  color: Color(0xFF1E293B),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+
+          // Time and date row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Time with clock icon
+              Row(
+                children: [
+                  const Icon(
+                    Icons.access_time,
+                    color: Color(0xFF64748B),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${_getCurrentTime(languageService)} ${_getAmPm(languageService)}',
+                    style: const TextStyle(
+                      color: Color(0xFF64748B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 16),
+
+              // Separator dot
+              Container(
+                width: 4,
+                height: 4,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFCBD5E1),
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 16),
+
+              // Gregorian date
+              Text(
+                _getGregorianDate(languageService),
+                style: const TextStyle(
+                  color: Color(0xFF64748B),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Hijri date
+          const Spacer(),
+          Text(
+            _getHijriDate(languageService),
+            style: TextStyle(
+              color: const Color(0xFF3B82F6),
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              fontFamily: languageService.isArabic ? 'Amiri' : null,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
   /// Time-based recommendation card with Arabic support
   Widget _buildRecommendedCard(LanguageService languageService) {
-    final greeting = _getTimeBasedGreeting(languageService);
     final recommendation = _getRecommendedAdhkar(languageService);
 
     return Container(
@@ -367,25 +524,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Current time display
-                Text(
-                  _getCurrentTime(),
-                  style: const TextStyle(
-                    color: Color(0xFF93C5FD),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                // Time-based greeting
-                Text(
-                  greeting,
-                  style: const TextStyle(
-                    color: Color(0xFF93C5FD),
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
                 // Main recommendation title
                 Text(
                   languageService.t('recommended_for_you'),
@@ -561,6 +699,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // Row for icon + text
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(
                 Icons.star_outline,
@@ -583,8 +722,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 1.5,
               fontFamily: isArabic ? 'Amiri' : null,
             ),
-            textAlign: isArabic ? TextAlign.center : TextAlign.justify,
-            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            textAlign: TextAlign.center,
           ),
 
           const SizedBox(height: 12),
@@ -594,7 +732,11 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Opening ${currentQuote['reference']}...'),
+                  content: Text(
+                    isArabic
+                        ? 'جاري فتح ${currentQuote['reference']}...'
+                        : 'Opening ${currentQuote['reference']}...',
+                  ),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Colors.black,
                   margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
