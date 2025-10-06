@@ -38,8 +38,8 @@ class LanguageService extends ChangeNotifier {
   // English translations
   static const Map<String, String> _englishTranslations = {
     // App
-    'app_title': 'Adhkar',
-    'app_subtitle': 'أذكار',
+    'app_title': 'Dhakkir',
+    'app_subtitle': 'And remind, for indeed, the reminder benefits the believers.',
 
     // Greetings
     'good_morning': 'Good Morning',
@@ -149,8 +149,8 @@ class LanguageService extends ChangeNotifier {
   // Arabic translations
   static const Map<String, String> _arabicTranslations = {
     // App
-    'app_title': 'أذكار',
-    'app_subtitle': 'Adhkar',
+    'app_title': 'ذَكِّر',
+    'app_subtitle': 'وَذَكِّرْ فَإِنَّ الذِّكْرَىٰ تَنفَعُ الْمُؤْمِنِينَ',
 
     // Greetings
     'good_morning': 'صباح الخير',

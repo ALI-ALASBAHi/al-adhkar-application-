@@ -20,15 +20,11 @@ class Sidebar extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Color(0xFF0EA5E9),
-                      child: Icon(Icons.stars, size: 18, color: Colors.white),
-                    ),
+                    Image.asset('assets/no_background_logo.png', height: 60, width: 60),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${languageService.t('app_title')}\nIslamic Remembrance',
+                        '${languageService.t('app_title')}\n${languageService.t('app_subtitle')}',
                         maxLines: 2,
                       ),
                     ),

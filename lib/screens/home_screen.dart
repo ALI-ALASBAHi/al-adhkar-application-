@@ -457,12 +457,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Color(0xFF64748B),
                     size: 16,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 2),
                   Text(
                     '${_getCurrentTime(languageService)} ${_getAmPm(languageService)}',
                     style: const TextStyle(
-                      color: Color(0xFF64748B),
-                      fontSize: 14,
+                      color: Color.fromARGB(255, 7, 8, 8),
+                      fontSize: 12.5,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -475,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 4,
                 height: 4,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFCBD5E1),
+                  color: Color.fromARGB(255, 6, 6, 6),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -485,8 +485,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 _getGregorianDate(languageService),
                 style: const TextStyle(
-                  color: Color(0xFF64748B),
-                  fontSize: 14,
+                  color: Color.fromARGB(255, 7, 7, 7),
+                  fontSize: 12.5,
                   fontWeight: FontWeight.w500,
                 ),
               ),

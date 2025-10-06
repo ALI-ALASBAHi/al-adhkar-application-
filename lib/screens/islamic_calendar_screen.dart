@@ -50,15 +50,6 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(33, 150, 243, 1),
-            elevation: 0,
-            title: Text(
-              languageService.t('calendar'),
-              style: const TextStyle(color: Colors.white),
-            ),
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -84,8 +75,7 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
                 _buildImportantDatesSection(languageService),
                 const SizedBox(height: 20),
 
-                // Footer with dual year reference
-                _buildFooter(languageService),
+
               ],
             ),
           ),
@@ -736,65 +726,6 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
                 ),
               );
             }).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(LanguageService languageService) {
-    final now = DateTime.now();
-    final hijriDate = _hijriService.gregorianToHijri(now);
-    final hijriYear = hijriDate['year']!;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.calendar_today,
-                color: Color(0xFF3B82F6),
-                size: 16,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${_convertToArabicNumbers(now.year.toString(), languageService)} CE',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF374151),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(Icons.nights_stay, color: Color(0xFF3B82F6), size: 16),
-              const SizedBox(width: 8),
-              Text(
-                '${_convertToArabicNumbers(hijriYear.toString(), languageService)} AH',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF374151),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

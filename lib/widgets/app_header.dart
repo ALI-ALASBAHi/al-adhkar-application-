@@ -29,42 +29,42 @@ class _AppHeaderState extends State<AppHeader> {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return Container(
-          color: const Color.fromRGBO(33, 150, 243, 1),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          color: const Color.fromARGB(255, 34, 129, 218),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (widget.showBackButton)
                 IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: widget.onBack,
                 )
               else
                 IconButton(
-                  icon: const Icon(Icons.menu),
+                  icon: const Icon(Icons.menu, color: Colors.white),
                   onPressed: widget.onMenuClick,
                 ),
-              const SizedBox(width: 4),
-              // App logo next to menu
+
+              // Logo
               const _AppLogo(),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment:
-                    languageService.isRTL
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.title ?? languageService.t('app_title'),
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  Text(
-                    languageService.t('app_subtitle'),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
+              const SizedBox(width: 6),
+
               const Spacer(),
-              // Language toggle button
+
+              // Title
+              Text(
+                widget.title ?? languageService.t('app_title'),
+                style: const TextStyle(
+                  height: 1.5,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
+
+              const Spacer(),
+
+              // Language toggle
               _buildLanguageToggle(languageService),
             ],
           ),
@@ -76,69 +76,52 @@ class _AppHeaderState extends State<AppHeader> {
   /// Language toggle button
   Widget _buildLanguageToggle(LanguageService languageService) {
     return Container(
+      margin: const EdgeInsets.only(top: 6),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          GestureDetector(
-            onTap: () {
-              if (!languageService.isArabic) return; // already EN
-              languageService.setLanguage(false);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color:
-                    languageService.isArabic
-                        ? Colors.transparent
-                        : Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                'EN',
-                style: TextStyle(
-                  color:
-                      languageService.isArabic
-                          ? Colors.white
-                          : const Color(0xFF3B82F6),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          _langButton(
+            label: 'English',
+            active: !languageService.isArabic,
+            onTap: () => languageService.setLanguage(false),
           ),
-          GestureDetector(
-            onTap: () {
-              if (languageService.isArabic) return; // already AR
-              languageService.setLanguage(true);
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color:
-                    languageService.isArabic
-                        ? Colors.white.withOpacity(0.9)
-                        : Colors.transparent,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                'عربي',
-                style: TextStyle(
-                  color:
-                      languageService.isArabic
-                          ? const Color(0xFF3B82F6)
-                          : Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+          _langButton(
+            label: 'العربية',
+            active: languageService.isArabic,
+            onTap: () => languageService.setLanguage(true),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _langButton({
+    required String label,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: active ? const Color.fromARGB(255, 76, 180, 228) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: active ? const Color.fromARGB(255, 5, 5, 5) : const Color.fromARGB(255, 0, 0, 0),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
@@ -149,22 +132,21 @@ class _AppLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Try to load the asset; if it doesn't exist, gracefully fall back without throwing logs
     return FutureBuilder(
-      future: rootBundle.load('assets/logo.png'),
+      future: rootBundle.load('assets/no_background_logo.png'),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             !snapshot.hasError) {
           return SizedBox(
-            width: 28,
-            height: 28,
-            child: Image.asset('assets/logo.png', fit: BoxFit.contain),
+            width: 60,
+            height: 65,
+            child: Image.asset('assets/no_background_logo.png', fit: BoxFit.contain),
           );
         }
         return const CircleAvatar(
-          radius: 14,
+          radius: 11,
           backgroundColor: Color(0xFF3B82F6),
-          child: Icon(Icons.auto_awesome, color: Colors.white, size: 16),
+          child: Icon(Icons.auto_awesome, color: Colors.white, size: 14),
         );
       },
     );
