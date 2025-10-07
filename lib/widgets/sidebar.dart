@@ -13,7 +13,7 @@ class Sidebar extends StatelessWidget {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return Drawer(
-          width: 300,
+          width: 330,
           child: SafeArea(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -24,8 +24,8 @@ class Sidebar extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${languageService.t('app_title')}\n${languageService.t('app_subtitle')}',
-                        maxLines: 2,
+                        languageService.t('app_subtitle'),
+                        maxLines: 3,
                       ),
                     ),
                     IconButton(

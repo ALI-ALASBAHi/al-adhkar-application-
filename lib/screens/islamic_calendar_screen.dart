@@ -635,6 +635,7 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.star_outline, color: Colors.orange, size: 20),
               const SizedBox(width: 8),
@@ -650,16 +651,18 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
           ),
           const SizedBox(height: 12),
           if (monthEvents.isEmpty)
-            Text(
-              languageService.isArabic
+          SizedBox(
+            width: double.infinity, 
+            child: Center(
+              child: Text(languageService.isArabic
                   ? 'لا توجد مناسبات إسلامية هذا الشهر'
                   : 'No Islamic events this month',
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
                 fontStyle: FontStyle.italic,
-              ),
-            )
+              ),)),)
           else
             ...monthEvents.entries.map((entry) {
               final day = entry.key;

@@ -180,7 +180,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       builder: (context, languageService, child) {
         return Scaffold(
           key: _scaffoldKey,
-          backgroundColor: const Color(0xFFF9FAFB),
+          backgroundColor: Colors.transparent,
           drawer: Sidebar(
             onClose: () => Navigator.of(context).pop(),
             onNavigate: (tab) {
@@ -188,40 +188,49 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               _handleSidebarNavigate(tab);
             },
           ),
-          body: SafeArea(
-            top: false,
-            child: Column(
-              children: [
-                // Removed mock status bar
-                AppHeader(
-                  title: _getHeaderTitle(languageService),
-                  onMenuClick: () => _scaffoldKey.currentState?.openDrawer(),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/decorative_background.png',
+                  fit: BoxFit.cover,
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
+              ),
+              SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    AppHeader(
+                      title: _getHeaderTitle(languageService),
+                      onMenuClick: () => _scaffoldKey.currentState?.openDrawer(),
                     ),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 448),
-                      child: AnimatedBuilder(
-                        animation: _transitionController,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _scaleAnimation.value,
-                            child: Opacity(
-                              opacity: _fadeAnimation.value,
-                              child: _renderScreen(),
-                            ),
-                          );
-                        },
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 448),
+                          child: AnimatedBuilder(
+                            animation: _transitionController,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _scaleAnimation.value,
+                                child: Opacity(
+                                  opacity: _fadeAnimation.value,
+                                  child: _renderScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,

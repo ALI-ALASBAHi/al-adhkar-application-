@@ -29,19 +29,19 @@ class _AppHeaderState extends State<AppHeader> {
     return Consumer<LanguageService>(
       builder: (context, languageService, child) {
         return Container(
-          color: const Color.fromARGB(255, 34, 129, 218),
+          color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (widget.showBackButton)
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: widget.onBack,
                 )
               else
                 IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.white),
+                  icon: const Icon(Icons.menu, color: Colors.black),
                   onPressed: widget.onMenuClick,
                 ),
 
