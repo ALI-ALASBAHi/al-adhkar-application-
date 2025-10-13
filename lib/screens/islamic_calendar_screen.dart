@@ -362,10 +362,6 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  languageService.t('sacred_month'),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
               ],
             ],
           ),

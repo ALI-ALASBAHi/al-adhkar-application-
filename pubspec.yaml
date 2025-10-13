@@ -23,8 +23,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/no_background_logo.png
     - assets/decorative_background.png
+    - assets/no_background_logo.png
 
 # flutter_launcher_icons config (must be OUTSIDE flutter:)
 flutter_icons:
