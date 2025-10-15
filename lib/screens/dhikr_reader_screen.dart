@@ -167,7 +167,7 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
             isReadingDark ? const Color(0xFF0F172A) : const Color(0xFFF3F4F6),
         body: SafeArea(
           child: MediaQuery(
-            data: media.copyWith(textScaleFactor: clampedTextScale),
+            data: media.copyWith(textScaler: TextScaler.linear(clampedTextScale)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -551,7 +551,7 @@ class _DhikrReaderScreenState extends State<DhikrReaderScreen> {
                                       ),
                                       child: Text(
                                         // '${_currentCount} / ${item!.count}',
-                                        '${_currentCount}',
+                                        '$_currentCount',
                                         style: TextStyle(
                                           color:
                                               isReadingDark

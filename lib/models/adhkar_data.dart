@@ -1,6 +1,8 @@
 import 'adhkar_categories/morning.dart' as morning_data;
 import 'adhkar_categories/evening.dart' as evening_data;
 import 'adhkar_categories/after_prayer.dart' as after_prayer_data;
+import 'adhkar_categories/before_sleep.dart' as before_sleep_data;
+import 'adhkar_categories/travel.dart' as travel_data;
 
 class AdhkarCategory {
   final String id;
@@ -47,8 +49,8 @@ class AdhkarData {
     AdhkarCategory(id: 'morning', title: 'Morning Adhkar', arabicTitle: 'أذكار الصباح', arabicDescription: 'أذكار تُقال في الصباح', description: 'Remembrances to be recited in the morning', count: 12),
     AdhkarCategory(id: 'evening', title: 'Evening Adhkar', arabicTitle: 'أذكار المساء', arabicDescription: 'أذكار تُقال في المساء', description: 'Remembrances to be recited in the evening', count: 11),
     AdhkarCategory(id: 'after-prayer', title: 'After Prayer Adhkar', arabicTitle: 'أذكار بعد الصلاة', arabicDescription: 'أذكار تُقال بعد الصلوات الخمس', description: 'Dhikr to recite after the five daily prayers', count: 8),
-   // AdhkarCategory(id: 'before-sleep', title: 'Before Sleep', arabicTitle: 'أذكار قبل النوم', arabicDescription: 'أذكار تُقال قبل النوم', description: 'Dhikr to recite before sleeping', count: 10),
-
+    AdhkarCategory(id: 'before-sleep', title: 'Before Sleep', arabicTitle: 'أذكار قبل النوم', arabicDescription: 'أذكار تُقال قبل النوم', description: 'Dhikr to recite before sleeping', count: 10),
+    AdhkarCategory(id: 'travel', title: 'Travel', arabicTitle: 'أذكار السفر', arabicDescription: 'أذكار تُقال في السفر', description: 'Dhikr to recite during travel', count: 10),
   ];
 
   static List<Dhikr> getAdhkarList(String categoryId) {
@@ -59,8 +61,10 @@ class AdhkarData {
         return evening_data.items;
       case 'after-prayer':
         return after_prayer_data.items;
-      // case 'before-sleep':
-      //   return before_sleep_data.items;
+      case 'before-sleep':
+        return before_sleep_data.items;
+      case 'travel':
+        return travel_data.items;
       default:
         return const [];
     }

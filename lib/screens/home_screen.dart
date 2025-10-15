@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Hijri service for consistent date calculations
   final HijriService _hijriService = HijriService();
   // Language switching loading flag
-  bool _isSwitchingLanguage = false;
+  final bool _isSwitchingLanguage = false;
 
   // Timer for updating time-based content
   Timer? _timeUpdateTimer;

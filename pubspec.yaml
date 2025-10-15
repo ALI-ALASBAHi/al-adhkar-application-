@@ -25,7 +25,11 @@ flutter:
   assets:
     - assets/decorative_background.png
     - assets/no_background_logo.png
-
+    - assets/icons/ramadan-sunrise.png
+    - assets/icons/isha-prayer.png
+    - assets/icons/islamic-friday-prayer.png
+    - assets/icons/sleeping.png
+    - assets/icons/travel-around-the-world.png
 # flutter_launcher_icons config (must be OUTSIDE flutter:)
 flutter_icons:
   android: true

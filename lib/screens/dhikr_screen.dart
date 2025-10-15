@@ -7,6 +7,18 @@ import 'dhikr_reader_screen.dart';
 class DhikrScreen extends StatelessWidget {
   const DhikrScreen({super.key});
 
+  // --- NEW: List of icon paths in order ---
+  // This makes it much cleaner to manage your icons.
+  // Just make sure the order here matches the order of your categories in AdhkarData.
+  final List<String> _iconPaths = const [
+    'assets/icons/ramadan-sunrise.png',          // For category 0
+    'assets/icons/isha-prayer.png',              // For category 1
+    'assets/icons/islamic-friday-prayer.png',    // For category 2
+    'assets/icons/sleeping.png',                 // For category 3
+    'assets/icons/travel-around-the-world.png',  // For category 4
+    // Add paths for new categories here
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LanguageService>(
@@ -45,22 +57,16 @@ class DhikrScreen extends StatelessWidget {
                     subtitle:
                         language.isArabic ? c.arabicDescription : c.description,
                     count: c.count,
-                    icon:
-                        i == 0
-                            ? Icons.wb_sunny
-                            : i == 1
-                            ? Icons.nightlight_round
-                            : Icons.star,
+                    // --- UPDATED: Use the list to get the icon path ---
+                    iconPath: _iconPaths[i],
                     isArabic: language.isArabic,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder:
-                              (_) => DhikrReaderScreen(
-                                categoryId: c.id,
-                                title:
-                                    language.isArabic ? c.arabicTitle : c.title,
-                              ),
+                          builder: (_) => DhikrReaderScreen(
+                            categoryId: c.id,
+                            title: language.isArabic ? c.arabicTitle : c.title,
+                          ),
                         ),
                       );
                     },
@@ -75,12 +81,14 @@ class DhikrScreen extends StatelessWidget {
   }
 }
 
+// No changes needed for _CategoryCard or _Pill widgets below this line...
+
 class _CategoryCard extends StatelessWidget {
   final String titleEn;
   final String titleAr;
   final String subtitle;
   final int count;
-  final IconData icon;
+  final String iconPath;
   final VoidCallback onTap;
   final bool isArabic;
 
@@ -89,7 +97,7 @@ class _CategoryCard extends StatelessWidget {
     required this.titleAr,
     required this.subtitle,
     required this.count,
-    required this.icon,
+    required this.iconPath,
     required this.onTap,
     required this.isArabic,
   });
@@ -101,7 +109,7 @@ class _CategoryCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: const Color.fromRGBO(229, 231, 235, 1)),
         ),
@@ -109,14 +117,12 @@ class _CategoryCard extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         child: Row(
           children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Color(0xFF3B82F6),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: Colors.white),
+            Image.asset(
+              // Adhkar icons
+              iconPath,
+              width: 75,
+              height: 75,
+              fit: BoxFit.contain,
             ),
             const SizedBox(width: 16),
             Expanded(
